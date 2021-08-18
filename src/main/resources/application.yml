@@ -1,0 +1,38 @@
+spring:
+  profiles:
+    active: "dev"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/silosy
+    username: postgres
+    password: tcp
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-plaform: org.hibernate.dialect.PostgreSQL95Dialect
+    database: postgresql
+    show-sql: true
+#    properties:
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#              action: create
+#              create-target: database_create.sql
+#logging
+logging:
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+  level:
+    org.springframework: info
+    org.hibernate: debug
+# Server configuration
+server:
+  port: 8080 #set your port

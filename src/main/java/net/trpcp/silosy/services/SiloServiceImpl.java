@@ -30,8 +30,8 @@ public class SiloServiceImpl implements SiloService{
         return siloRepository.save(s);
     }
 
-    public Set<Silo> saveAll(Set<Silo> silos) {
-        return (Set<Silo>) siloRepository.saveAll(silos);
+    public Iterable<Silo> saveAll(Set<Silo> silos) {
+        return siloRepository.saveAll(silos);
     }
 
     public Optional<Silo> findById(Long aLong) {

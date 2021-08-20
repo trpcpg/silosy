@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Set;
 
-public interface WareRepository extends CrudRepository<Ware,Long> {
+public interface WareService extends CrudRepository<Ware,Long> {
     Ware findByName(String s);
     Set<Ware> findByNameLike(String s);
 }

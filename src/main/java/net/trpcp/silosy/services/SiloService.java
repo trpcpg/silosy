@@ -12,5 +12,5 @@ public interface SiloService {
 
     Set<Silo> findByCapacity(Integer i);
 
-    Set<Silo> saveAll(Set<Silo> silos);
+    Iterable<Silo> saveAll(Set<Silo> silos);
 }

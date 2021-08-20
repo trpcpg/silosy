@@ -6,16 +6,16 @@ import net.trpcp.silosy.model.Silo;
 import net.trpcp.silosy.model.SiloEvent;
 import net.trpcp.silosy.model.Ware;
 import net.trpcp.silosy.repositories.PersonRepository;
-import net.trpcp.silosy.repositories.SiloEventRepository;
-import net.trpcp.silosy.repositories.SiloRepository;
-import net.trpcp.silosy.repositories.WareRepository;
+import net.trpcp.silosy.repositories.WareService;
 import net.trpcp.silosy.services.SiloEventService;
 import net.trpcp.silosy.services.SiloService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -23,14 +23,14 @@ import java.util.Set;
 public class DataLoader implements CommandLineRunner {
 
     private final SiloService siloService;
-    private final WareRepository wareRepository;
+    private final WareService wareService;
     private final PersonRepository personRepository;
     private final SiloEventService siloEventService;
     boolean init = false;
 
-    public DataLoader(SiloService siloService, WareRepository wareRepository, PersonRepository personRepository, SiloEventService siloEventService) {
+    public DataLoader(SiloService siloService, WareService wareService, PersonRepository personRepository, SiloEventService siloEventService) {
         this.siloService = siloService;
-        this.wareRepository = wareRepository;
+        this.wareService = wareService;
         this.personRepository = personRepository;
         this.siloEventService = siloEventService;
     }
@@ -55,7 +55,9 @@ public class DataLoader implements CommandLineRunner {
         set.add(Silo.builder().name("Silo3").capacity(12900).build());
         set.add(Silo.builder().name("Silo4").capacity(13100).build());
 
-        siloService.saveAll(set);
+        Iterable<Silo> savedSilos = siloService.saveAll(set);
+        List<Silo> siloList = new ArrayList<>();
+        savedSilos.forEach(siloList::add);
 
         Set<Ware> wares = new HashSet<>();
 
@@ -66,7 +68,9 @@ public class DataLoader implements CommandLineRunner {
         wares.add(Ware.builder().name("popiół").build());
         wares.add(Ware.builder().name("rzepak").build());
 
-        wareRepository.saveAll(wares);
+        Iterable<Ware> savedWares = wareService.saveAll(wares);
+        List<Ware> wareList = new ArrayList<>();
+        savedWares.forEach(wareList::add);
 
         Set<Person> persons = new HashSet<>();
 
@@ -74,13 +78,15 @@ public class DataLoader implements CommandLineRunner {
         persons.add(Person.builder().firstName("Bożena").lastName("Kuropatwa").build());
         persons.add(Person.builder().firstName("Sławek").lastName("Wszechmocny").build());
 
-        personRepository.saveAll(persons);
+        Iterable<Person> savedPersons = personRepository.saveAll(persons);
+        List<Person> personList = new ArrayList<>();
+        savedPersons.forEach(personList::add);
 
         SiloEvent se = SiloEvent.builder()
                 .eventTime(LocalDateTime.of(2021,8,17,15,4))
-                .silo(set.iterator().next())
-                .person(persons.iterator().next())
-                .ware(wares.iterator().next())
+                .silo(siloList.get(0))
+                .person(personList.get(0))
+                .ware(wareList.get(0))
                 .document("PZ/23/432/2021")
                 .description("wilgoć")
                 .quantity(2000)
@@ -88,12 +94,25 @@ public class DataLoader implements CommandLineRunner {
 
         siloEventService.save(se);
 
+        SiloEvent se1 = SiloEvent.builder()
+                .eventTime(LocalDateTime.of(2021,8,17,15,4))
+                .silo(siloList.get(1))
+                .person(personList.get(1))
+                .ware(wareList.get(1))
+                .document("PZ/33/455/2021")
+                .description("robaki")
+                .quantity(3000)
+                .build();
+
+        siloEventService.save(se1);
+
         Set<Silo> s = siloService.findByNameLike("Silo%");
         System.out.println(s.size());
 
         System.out.println(personRepository.findByFirstName("Barbara").getLastName());
-        System.out.println(wareRepository.findAll().getClass());
+        System.out.println(wareService.findAll().getClass());
         System.out.println(siloEventService.findBySilo("Silo1").iterator().next().getDocument());
+        siloEventService.findAll().forEach(System.out::println);
     }
 
 }

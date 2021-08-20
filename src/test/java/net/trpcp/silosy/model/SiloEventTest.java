@@ -22,7 +22,7 @@ class SiloEventTest {
 
     @BeforeEach
     void setUp() {
-        se = SiloEvent.builder().id(id).time(now).silo(silo).ware(ware).quantity(quantity).document(document).description(description).person(person).build();
+        se = SiloEvent.builder().id(id).eventTime(now).silo(silo).ware(ware).quantity(quantity).document(document).description(description).person(person).build();
     }
 
     @Test

@@ -14,7 +14,7 @@ import java.util.Objects;
 public class SiloEvent extends BaseEntity{
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime time;
+    private LocalDateTime eventTime;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "silo_id")
@@ -33,9 +33,9 @@ public class SiloEvent extends BaseEntity{
     private Person person;
 
     @Builder
-    public SiloEvent(Long id, LocalDateTime time, Silo silo, Ware ware, Integer quantity, String document, String description, Person person) {
+    public SiloEvent(Long id, LocalDateTime eventTime, Silo silo, Ware ware, Integer quantity, String document, String description, Person person) {
         super(id);
-        this.time = time;
+        this.eventTime = eventTime;
         this.silo = silo;
         this.ware = ware;
         this.quantity = quantity;
@@ -49,18 +49,18 @@ public class SiloEvent extends BaseEntity{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SiloEvent siloEvent = (SiloEvent) o;
-        return Objects.equals(time, siloEvent.time) && Objects.equals(silo, siloEvent.silo) && Objects.equals(ware, siloEvent.ware) && Objects.equals(quantity, siloEvent.quantity) && Objects.equals(document, siloEvent.document) && Objects.equals(description, siloEvent.description) && Objects.equals(person, siloEvent.person);
+        return Objects.equals(eventTime, siloEvent.eventTime) && Objects.equals(silo, siloEvent.silo) && Objects.equals(ware, siloEvent.ware) && Objects.equals(quantity, siloEvent.quantity) && Objects.equals(document, siloEvent.document) && Objects.equals(description, siloEvent.description) && Objects.equals(person, siloEvent.person);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(time, silo, ware, quantity, document, description, person);
+        return Objects.hash(eventTime, silo, ware, quantity, document, description, person);
     }
 
     @Override
     public String toString() {
         return "SiloEvent{" +
-                "time=" + time +
+                "time=" + eventTime +
                 ", silo=" + silo +
                 ", ware=" + ware +
                 ", quantity=" + quantity +

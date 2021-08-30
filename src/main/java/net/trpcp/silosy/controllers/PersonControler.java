@@ -33,15 +33,15 @@ public class PersonControler {
 
     @PostMapping("modperson/{ido}")
     public String modPerson(Model model, @ModelAttribute("newp") Person person, @PathVariable("ido") String id){
-        //person.setId(Long.valueOf(id));
+        person.setId(Long.valueOf(id));
         Person savedPerson = personService.save(person);
         return "redirect:/person";
     }
 
-    @PostMapping("addperson/")
+    @PostMapping("person")
     public String addPerson(Model model, @ModelAttribute("newp") Person person){
         Person savedPerson = personService.save(person);
-        return "redirect:/person/";
+        return "redirect:/person";
     }
 
     @GetMapping("modperson/{id}")

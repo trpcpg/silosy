@@ -22,35 +22,51 @@
     </tr>
     </tbody>
 </table>
-<div th:if="${newp.id}">
-    <form th:object="${newp}" th:action="@{'/modperson/' + ${newp.id}}" method="post">
-        <table>
-            <tr>
-                <th>imie</th>
-                <th>nazwisko</th>
-            </tr>
-            <tr>
-                <td><input type="text" th:field="${newp.firstName}"></td>
-                <td><input type="text" th:field="${newp.lastName}"></td>
-            </tr>
-        </table>
-        <button type="submit">Zapisz</button>
-    </form>
-</div>
-<div th:if="not ${newp.id}">
-    <form th:object="${newp}" th:action="@{/addperson/}" method="post">
-        <table>
-            <tr>
-                <th>imie</th>
-                <th>nazwisko</th>
-            </tr>
-            <tr>
-                <td><input type="text" th:field="${newp.firstName}"></td>
-                <td><input type="text" th:field="${newp.lastName}"></td>
-            </tr>
-        </table>
-        <button type="submit">Zapisz</button>
-    </form>
-</div>
+<form th:object="${newp}" method="post">
+    <table>
+        <tr>
+            <th>Inię</th><th>Nazwisko</th>
+        </tr>
+        <tr>
+            <td><input type="text" th:field="*{firstName}"/></td><td><input type="text" th:field="*{lastName}"/></td>
+        </tr>
+    </table>
+
+
+    <button
+            th:with="text=${newp.id}==null ? 'Dodaj osobę' : 'Zmień dane'"
+            type="submit" th:text="${text}">Dodaj osobę
+    </button>
+</form>
+<!--<div th:if="${newp.id}">-->
+<!--    <form th:object="${newp}" th:action="@{'/modperson/' + ${newp.id}}" method="post">-->
+<!--        <table>-->
+<!--            <tr>-->
+<!--                <th>imie</th>-->
+<!--                <th>nazwisko</th>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td><input type="text" th:field="${newp.firstName}"></td>-->
+<!--                <td><input type="text" th:field="${newp.lastName}"></td>-->
+<!--            </tr>-->
+<!--        </table>-->
+<!--        <button type="submit">Zapisz</button>-->
+<!--    </form>-->
+<!--</div>-->
+<!--<div th:if="not ${newp.id}">-->
+<!--    <form th:object="${newp}" th:action="@{/addperson/}" method="post">-->
+<!--        <table>-->
+<!--            <tr>-->
+<!--                <th>imie</th>-->
+<!--                <th>nazwisko</th>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td><input type="text" th:field="${newp.firstName}"></td>-->
+<!--                <td><input type="text" th:field="${newp.lastName}"></td>-->
+<!--            </tr>-->
+<!--        </table>-->
+<!--        <button type="submit">Zapisz</button>-->
+<!--    </form>-->
+<!--</div>-->
 </body>
 </html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Osoby</title>
+</head>
+<body>
+<p>aqq</p>
+<table>
+    <thead>
+    <tr>
+        <td>Imię</td>
+        <td>Nazwisko</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="person : ${persons}">
+        <td th:text="${person.firstName}">456</td>
+        <td th:text="${person.lastName}"></td>
+        <td><a href="#" th:href="@{'/modperson/' + ${person.id}}">Zmień</a></td>
+        <td><a href="#" th:href="@{'/delperson/' + ${person.id}}">Delete</a></td>
+    </tr>
+    </tbody>
+</table>
+<div th:if="${newp.id}">
+    <form th:object="${newp}" th:action="@{'/modperson/' + ${newp.id}}" method="post">
+        <table>
+            <tr>
+                <th>imie</th>
+                <th>nazwisko</th>
+            </tr>
+            <tr>
+                <td><input type="text" th:field="${newp.firstName}"></td>
+                <td><input type="text" th:field="${newp.lastName}"></td>
+            </tr>
+        </table>
+        <button type="submit">Zapisz</button>
+    </form>
+</div>
+<div th:if="not ${newp.id}">
+    <form th:object="${newp}" th:action="@{/addperson/}" method="post">
+        <table>
+            <tr>
+                <th>imie</th>
+                <th>nazwisko</th>
+            </tr>
+            <tr>
+                <td><input type="text" th:field="${newp.firstName}"></td>
+                <td><input type="text" th:field="${newp.lastName}"></td>
+            </tr>
+        </table>
+        <button type="submit">Zapisz</button>
+    </form>
+</div>
+</body>
+</html>

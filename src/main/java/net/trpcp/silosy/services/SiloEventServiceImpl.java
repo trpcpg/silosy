@@ -8,7 +8,7 @@ import net.trpcp.silosy.model.Ware;
 import net.trpcp.silosy.repositories.PersonRepository;
 import net.trpcp.silosy.repositories.SiloEventRepository;
 import net.trpcp.silosy.repositories.SiloRepository;
-import net.trpcp.silosy.repositories.WareService;
+import net.trpcp.silosy.repositories.WareRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,9 +21,9 @@ public class SiloEventServiceImpl implements SiloEventService{
     SiloEventRepository siloEventRepository;
     SiloRepository siloRepository;
     PersonRepository personRepository;
-    WareService wareRepository;
+    WareRepository wareRepository;
 
-    public SiloEventServiceImpl(SiloEventRepository siloEventRepository, SiloRepository siloRepository, PersonRepository personRepository, WareService wareRepository) {
+    public SiloEventServiceImpl(SiloEventRepository siloEventRepository, SiloRepository siloRepository, PersonRepository personRepository, WareRepository wareRepository) {
         this.siloEventRepository = siloEventRepository;
         this.siloRepository = siloRepository;
         this.personRepository = personRepository;

@@ -6,7 +6,7 @@ import net.trpcp.silosy.model.Silo;
 import net.trpcp.silosy.model.SiloEvent;
 import net.trpcp.silosy.model.Ware;
 import net.trpcp.silosy.repositories.PersonRepository;
-import net.trpcp.silosy.repositories.WareService;
+import net.trpcp.silosy.repositories.WareRepository;
 import net.trpcp.silosy.services.SiloEventService;
 import net.trpcp.silosy.services.SiloService;
 import org.springframework.boot.CommandLineRunner;
@@ -23,15 +23,15 @@ import java.util.Set;
 public class DataLoader implements CommandLineRunner {
 
     private final SiloService siloService;
-    private final WareService wareService;
-    private final PersonRepository personRepository;
+    private final WareRepository wareService;
+    private final PersonRepository personService;
     private final SiloEventService siloEventService;
     boolean init = false;
 
-    public DataLoader(SiloService siloService, WareService wareService, PersonRepository personRepository, SiloEventService siloEventService) {
+    public DataLoader(SiloService siloService, WareRepository wareService, PersonRepository personService, SiloEventService siloEventService) {
         this.siloService = siloService;
         this.wareService = wareService;
-        this.personRepository = personRepository;
+        this.personService = personService;
         this.siloEventService = siloEventService;
     }
 
@@ -78,7 +78,7 @@ public class DataLoader implements CommandLineRunner {
         persons.add(Person.builder().firstName("Bożena").lastName("Kuropatwa").build());
         persons.add(Person.builder().firstName("Sławek").lastName("Wszechmocny").build());
 
-        Iterable<Person> savedPersons = personRepository.saveAll(persons);
+        Iterable<Person> savedPersons = personService.saveAll(persons);
         List<Person> personList = new ArrayList<>();
         savedPersons.forEach(personList::add);
 
@@ -109,7 +109,7 @@ public class DataLoader implements CommandLineRunner {
         Set<Silo> s = siloService.findByNameLike("Silo%");
         System.out.println(s.size());
 
-        System.out.println(personRepository.findByFirstName("Barbara").getLastName());
+        System.out.println(personService.findByFirstName("Barbara").getLastName());
         System.out.println(wareService.findAll().getClass());
         System.out.println(siloEventService.findBySilo("Silo1").iterator().next().getDocument());
         siloEventService.findAll().forEach(System.out::println);

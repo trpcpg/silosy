@@ -26,7 +26,7 @@ public class SiloServiceImpl implements SiloService{
         return siloRepository.findByCapacity(i);
     }
 
-    public <S extends Silo> S save(S s) {
+    public Silo save(Silo s) {
         return siloRepository.save(s);
     }
 
@@ -34,16 +34,16 @@ public class SiloServiceImpl implements SiloService{
         return siloRepository.saveAll(silos);
     }
 
-    public Optional<Silo> findById(Long aLong) {
-        return siloRepository.findById(aLong);
+    public Silo findById(Long aLong) {
+        return siloRepository.findById(aLong).orElse(null);
     }
 
     public boolean existsById(Long aLong) {
         return siloRepository.existsById(aLong);
     }
 
-    public Set<Silo> findAll() {
-        return (Set<Silo>) siloRepository.findAll();
+    public Iterable<Silo> findAll() {
+        return siloRepository.findAll();
     }
 
     public Set<Silo> findAllById(Iterable<Long> iterable) {

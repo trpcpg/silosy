@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Silosy</title>
+</head>
+<body>
+<p th:text="${ss}">aqq</p>
+<table>
+    <thead>
+    <tr>
+        <td>Nazwa</td>
+        <td>Pojemność</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="silo,siloStat : ${silos}">
+        <td th:text="${silo.name}">456</td>
+        <td th:text="${silo.capacity}"></td>
+        <td><a href="#" th:href="@{'/modsilo/' + ${siloStat.index}}">Zmień</a></td>
+        <td><a href="#" th:href="@{'/delsilo/' + ${siloStat.index}}">Delete</a></td>
+    </tr>
+    </tbody>
+</table>
+<form th:object="${news}" method="post">
+    <input type="text" th:field="*{name}"/>
+    <input type="text" th:field="*{capacity}"/>
+    <button
+        th:with="text=${news.id}==null ? 'Add Silo' : 'Update Silo'"
+        type="submit" th:text="${text}">Add Silo
+    </button>
+</form>
+</body>
+</html>

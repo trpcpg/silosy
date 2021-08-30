@@ -1,15 +1,17 @@
 package net.trpcp.silosy.services;
 
 import net.trpcp.silosy.model.Ware;
-import net.trpcp.silosy.repositories.WareService;
+import net.trpcp.silosy.repositories.WareRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+@Service
 public class WareServiceImpl implements net.trpcp.silosy.services.WareService {
 
-    WareService wareRepository;
+    WareRepository wareRepository;
 
-    public WareServiceImpl(WareService wareRepository) {
+    public WareServiceImpl(WareRepository wareRepository) {
         this.wareRepository = wareRepository;
     }
 

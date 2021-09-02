@@ -17,17 +17,25 @@ public class Silo extends BaseEntity{
 
     private String name;
     private Integer capacity;
+    private Integer amount;
+
+    @OneToOne
+    private Ware ware;
+
+    private Integer status;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "silo", fetch = FetchType.LAZY)
     private Set<SiloEvent> events;
 
 
     @Builder
-    public Silo(Long id, String name, Integer capacity, Set<SiloEvent> events) {
+    public Silo(Long id, String name, Integer capacity, Set<SiloEvent> events, Integer amount, Ware ware) {
         super(id);
         this.name = name;
         this.capacity = capacity;
         this.events = events;
+        this.amount = amount;
+        this.ware = ware;
     }
 
     @Override

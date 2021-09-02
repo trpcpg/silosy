@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dziennik</title>
+</head>
+<body>
+<form th:object="${newse}" method="post">
+    <table>
+        <tr>
+            <th>Data</th><th>Towar</th><th>Ilość</th><th>Dokument</th><th>Opis</th><th>Kto</th>
+        </tr>
+        <tr th:each="event : ${events}">
+            <td th:text="${event.eventTime}"></td>
+            <td th:text="${event.ware.name}"></td>
+            <td th:text="${event.quantity}"></td>
+            <td th:text="${event.document}"></td>
+            <td th:text="${event.description}"></td>
+            <td th:text="${event.person.firstName} + ' ' + ${event.person.lastName}"></td>
+        </tr>
+        <tr>
+            <td><input th:field="${newse.eventTime}" type="datetime-local"/></td>
+            <td >
+                <select th:field="*{ware}">
+                    <option th:each="w : ${wares}" th:value="${w.id}" th:text="${w.name}"></option>
+                </select>
+            </td>
+            <td><input th:field="${newse.quantity}"/></td>
+            <td><input th:field="${newse.document}"/></td>
+            <td><input th:field="${newse.description}"/></td>
+            <td >
+                <select th:field="*{person}">
+                    <option th:each="p : ${persons}" th:value="${p.id}" th:text="${p.firstName}+' '+${p.lastName}"></option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <button type="submit">Zapisz</button>
+</form>
+</body>
+</html>

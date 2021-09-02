@@ -12,6 +12,8 @@ import net.trpcp.silosy.repositories.WareRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -41,9 +43,26 @@ public class SiloEventServiceImpl implements SiloEventService{
     }
 
     @Override
-    public Set<SiloEvent> findBySilo(String s) {
-        Silo silo = siloRepository.findByName(s);
-        return siloEventRepository.findBySilo(silo);
+    public Set<SiloEvent> findBySilo(Silo s) {
+        //Silo silo = siloRepository.findByName(s);
+        return siloEventRepository.findBySilo(s);
+    }
+
+    @Override
+    public Set<SiloEvent> findBySiloName(String s) {
+        Silo it = siloRepository.findByName(s);
+        return siloEventRepository.findBySilo(it);
+    }
+
+    @Override
+    public Set<SiloEvent> findBySilo_id(Long id) {
+        Optional<Silo> o = siloRepository.findById(id);
+        if(o.isPresent()){
+            return siloEventRepository.findBySilo(o.get());
+        }
+        else{
+            return new HashSet<>();
+        }
     }
 
     @Override

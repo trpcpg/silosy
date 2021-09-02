@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Silosy - Towary</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Nazwa</th>
+    </tr>
+    <tr th:each="ware : ${wares}">
+        <td th:text="${ware.name}"></td>
+        <td><a href="#" th:href="'modware/' + ${ware.id}">Zmień</a></td>
+        <td><a href="#" th:href="'delware/' + ${ware.id}">Usuń</a></td>
+    </tr>
+</table>
+<form th:object="${neww}" method="post">
+    <label>Nazwa:</label><input type="text" th:field="*{name}"/>
+    <button th:with="text=${neww.id}==null? 'Dodaj towar' : 'Zmień towar'" th:text="${text}" type="submit">Dodaj towar</button>
+</form>
+</body>
+</html>

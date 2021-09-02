@@ -11,12 +11,16 @@
     <tr>
         <td>Nazwa</td>
         <td>Pojemność</td>
+        <td>Towar</td>
+        <td>ilość</td>
     </tr>
     </thead>
     <tbody>
     <tr th:each="silo,siloStat : ${silos}">
         <td th:text="${silo.name}">456</td>
         <td th:text="${silo.capacity}"></td>
+        <td th:text="${silo.ware.name}"></td>
+        <td th:text="${silo.amount}"></td>
         <td><a href="#" th:href="@{'/modsilo/' + ${siloStat.index}}">Zmień</a></td>
         <td><a href="#" th:href="@{'/delsilo/' + ${siloStat.index}}">Delete</a></td>
     </tr>

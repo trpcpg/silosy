@@ -14,7 +14,7 @@ public interface PersonService {
     Set<Person> findByFirstNameLike(String s);
     Set<Person> findByLastNameLike(String s);
     Person save(Person p);
-    Set<Person> saveAll(Set<Person> set);
+    Iterable<Person> saveAll(Set<Person> set);
     void delete(Person p);
     void deleteById(Long l);
 }

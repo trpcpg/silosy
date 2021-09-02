@@ -51,8 +51,8 @@ public class PersonServiceImpl implements net.trpcp.silosy.services.PersonServic
     }
 
     @Override
-    public Set<Person> saveAll(Set<Person> set) {
-        return (Set<Person>) personRepository.saveAll(set);
+    public Iterable<Person> saveAll(Set<Person> set) {
+        return personRepository.saveAll(set);
     }
 
     @Override

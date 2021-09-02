@@ -8,10 +8,10 @@ public interface WareService {
 
     Ware findById(Long l);
     Ware findByName(String s);
-    Set<Ware> findAll();
+    Iterable<Ware> findAll();
     Set<Ware> findByNameLike(String s);
     Ware save(Ware w);
-    Set<Ware> saveAll(Set<Ware> set);
+    Iterable<Ware> saveAll(Set<Ware> set);
     void delete(Ware w);
     void deleteById(Long l);
 

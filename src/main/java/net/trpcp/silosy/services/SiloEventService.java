@@ -12,7 +12,9 @@ public interface SiloEventService {
 
     SiloEvent findById(Long l);
     Set<SiloEvent> findByEventTime(LocalDateTime localDateTime);
-    Set<SiloEvent> findBySilo(String s);
+    Set<SiloEvent> findBySilo(Silo s);
+    Set<SiloEvent> findBySiloName(String s);
+    Set<SiloEvent> findBySilo_id(Long id);
     Set<SiloEvent> findByWare(Ware w);
     Set<SiloEvent> findByPerson(Person p);
     Set<SiloEvent> findByDocument(String s);

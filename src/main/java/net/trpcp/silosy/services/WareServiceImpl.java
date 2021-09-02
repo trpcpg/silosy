@@ -26,8 +26,8 @@ public class WareServiceImpl implements net.trpcp.silosy.services.WareService {
     }
 
     @Override
-    public Set<Ware> findAll() {
-        return (Set<Ware>) wareRepository.findAll();
+    public Iterable<Ware> findAll() {
+        return wareRepository.findAll();
     }
 
     @Override
@@ -41,8 +41,8 @@ public class WareServiceImpl implements net.trpcp.silosy.services.WareService {
     }
 
     @Override
-    public Set<Ware> saveAll(Set<Ware> set) {
-        return (Set<Ware>) wareRepository.saveAll(set);
+    public Iterable<Ware> saveAll(Set<Ware> set) {
+        return wareRepository.saveAll(set);
     }
 
     @Override

@@ -12,4 +12,6 @@ public interface SiloRepository extends CrudRepository<Silo, Long> {
     Set<Silo> findByNameLike(String s);
 
     Set<Silo> findByCapacity(Integer i);
+
+    Set<Silo> findByOrderByName();
 }

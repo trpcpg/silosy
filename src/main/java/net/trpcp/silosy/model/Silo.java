@@ -17,7 +17,7 @@ public class Silo extends BaseEntity{
 
     private String name;
     private Integer capacity;
-    private Integer amount;
+    private Integer stored;
 
     @OneToOne
     private Ware ware;
@@ -29,13 +29,14 @@ public class Silo extends BaseEntity{
 
 
     @Builder
-    public Silo(Long id, String name, Integer capacity, Set<SiloEvent> events, Integer amount, Ware ware) {
+    public Silo(Long id, String name, Integer capacity, Set<SiloEvent> events, Integer stored, Ware ware, Integer status) {
         super(id);
         this.name = name;
         this.capacity = capacity;
         this.events = events;
-        this.amount = amount;
+        this.stored = stored;
         this.ware = ware;
+        this.status = status;
     }
 
     @Override
@@ -53,9 +54,11 @@ public class Silo extends BaseEntity{
 
     @Override
     public String toString() {
-        return "Silo{" +
-                "name='" + name + '\'' +
-                ", capacity=" + capacity +
-                '}';
+        return "Silos " +
+                "nazwa: " + name +
+                ", pojemność: " + capacity +
+                "[t], obecnie: " + stored +
+                "[t], towar: " + ware.getName() +
+                ", status: " + status;
     }
 }

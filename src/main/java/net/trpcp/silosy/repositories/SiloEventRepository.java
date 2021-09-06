@@ -15,4 +15,5 @@ public interface SiloEventRepository extends CrudRepository<SiloEvent, Long> {
     Set<SiloEvent> findByWare(Ware w);
     Set<SiloEvent> findByPerson(Person p);
     Set<SiloEvent> findByDocument(String s);
+    Set<SiloEvent> findBySiloOrderByEventTimeDesc(Silo s);
 }

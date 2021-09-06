@@ -8,10 +8,11 @@ public interface SiloService {
 
     Iterable<Silo> findAll();
 
+    Iterable<Silo> findAllOrderByName();
+
     Silo findById(Long id);
 
     Silo findByName(String s);
-
     Set<Silo> findByNameLike(String s);
 
     Set<Silo> findByCapacity(Integer i);

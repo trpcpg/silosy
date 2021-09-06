@@ -3,32 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <title>Dziennik</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
+    <script>
+        $(document).ready(function(){$('#targetcontener').hide()});
+        function targetfetch(){
+            var s = document.getElementById("kind");
+            if(s.value==3 || s.value==4 || s.value==6){
+                $('#targetcontener').show();
+            }
+            else{
+                $('#targetcontener').hide();
+            }
+            console.log(s.value);
+        }
+    </script>
+    <style>
+        .circle {
+            border-radius: 50%;
+            height: 100px;
+            width: 100px;
+            border: 3px solid #73AD21;
+            margin: auto;
+            text-align: center;
+        }
+        .all{
+            width: 250px;
+            margin: auto;
+        }
+        div.l {
+            position:relative;
+            height: 17px;
+        }
+        table.l {
+            margin: 0 auto; /* or margin: 0 auto 0 auto */
+        }
+    </style>
 </head>
 <body>
+<div class="all">
+    <a th:each="eachsilo : ${silos}" style="display:inline-block" href="#" th:href="@{${eachsilo.id}}">
+        <div class="circle">
+            <div class="l"></div>
+            <table class="l">
+                <tr><td class="l" th:text="${eachsilo.name}"></td></tr>
+                <tr><td class="l" th:text="${eachsilo.stored + 't'}"></td>
+                </tr><tr><td class="l" th:text="${eachsilo.ware.name}"></td></tr>
+            </table>
+        </div><!--<div style="display:inline-block" class="circle"></div>-->
+        <div class="circle" style="display:inline-block" th:remove="all">1110t</div>
+        <div class="circle" style="display:inline-block" th:remove="all">0t</div>
+        <div class="circle" style="display:inline-block" th:remove="all">0t</div>
+    </a>
+</div>
+<!--<div>-->
+<!--    <div class="circle"></div><div class="circle"></div>-->
+<!--</div>-->
+<div th:text="${silo}"></div>
 <form th:object="${newse}" method="post">
     <table>
         <tr>
-            <th>Data</th><th>Towar</th><th>Ilość</th><th>Dokument</th><th>Opis</th><th>Kto</th>
+            <th>Data</th><th>Towar</th><th>Ilość</th><th>Czynność</th><th>Dokument</th><th>Opis</th><th>Kto</th>
         </tr>
         <tr th:each="event : ${events}">
             <td th:text="${event.eventTime}"></td>
             <td th:text="${event.ware.name}"></td>
             <td th:text="${event.quantity}"></td>
+            <td th:text="${event.eventKind.name}"></td>
             <td th:text="${event.document}"></td>
             <td th:text="${event.description}"></td>
             <td th:text="${event.person.firstName} + ' ' + ${event.person.lastName}"></td>
         </tr>
         <tr>
             <td><input th:field="${newse.eventTime}" type="datetime-local"/></td>
-            <td >
+            <td>
                 <select th:field="*{ware}">
                     <option th:each="w : ${wares}" th:value="${w.id}" th:text="${w.name}"></option>
                 </select>
             </td>
             <td><input th:field="${newse.quantity}"/></td>
+            <td>
+                <select id="kind" onchange="targetfetch()" th:field="*{eventKind}">
+                    <option value="0">---wybierz---</option>
+                    <option th:each="e : ${eks}" th:value="${e.id}" th:text="${e.name}"></option>
+                </select>
+                <div style="position: absolute" id="targetcontener">
+                    <select th:object="${targetsilo}" id="target" name="targetsilo">
+                        <option value="0">---wybierz---</option>
+                        <option th:each="s : ${silos}" th:value="${s.id}" th:text="${s.name}"></option>
+                    </select>
+                </div>
+            </td>
             <td><input th:field="${newse.document}"/></td>
             <td><input th:field="${newse.description}"/></td>
-            <td >
+            <td>
                 <select th:field="*{person}">
                     <option th:each="p : ${persons}" th:value="${p.id}" th:text="${p.firstName}+' '+${p.lastName}"></option>
                 </select>

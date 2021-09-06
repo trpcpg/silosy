@@ -25,7 +25,8 @@ public class SiloEvent extends BaseEntity{
     private Ware ware;
 
     private Integer quantity;
-
+    @OneToOne
+    private EventKind eventKind;
     private String document;
     private String description;
 
@@ -34,12 +35,13 @@ public class SiloEvent extends BaseEntity{
     private Person person;
 
     @Builder
-    public SiloEvent(Long id, LocalDateTime eventTime, Silo silo, Ware ware, Integer quantity, String document, String description, Person person) {
+    public SiloEvent(Long id, LocalDateTime eventTime, Silo silo, Ware ware, Integer quantity, EventKind eventKind, String document, String description, Person person) {
         super(id);
         this.eventTime = eventTime;
         this.silo = silo;
         this.ware = ware;
         this.quantity = quantity;
+        this.eventKind = eventKind;
         this.document = document;
         this.description = description;
         this.person = person;
@@ -50,12 +52,12 @@ public class SiloEvent extends BaseEntity{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SiloEvent siloEvent = (SiloEvent) o;
-        return Objects.equals(eventTime, siloEvent.eventTime) && Objects.equals(silo, siloEvent.silo) && Objects.equals(ware, siloEvent.ware) && Objects.equals(quantity, siloEvent.quantity) && Objects.equals(document, siloEvent.document) && Objects.equals(description, siloEvent.description) && Objects.equals(person, siloEvent.person);
+        return Objects.equals(eventTime, siloEvent.eventTime) && Objects.equals(silo, siloEvent.silo) && Objects.equals(ware, siloEvent.ware) && Objects.equals(quantity, siloEvent.quantity) && Objects.equals(eventKind, siloEvent.eventKind) && Objects.equals(document, siloEvent.document) && Objects.equals(description, siloEvent.description) && Objects.equals(person, siloEvent.person);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(eventTime, silo, ware, quantity, document, description, person);
+        return Objects.hash(eventTime, silo, ware, quantity, eventKind, document, description, person);
     }
 
     @Override
@@ -65,6 +67,7 @@ public class SiloEvent extends BaseEntity{
                 ", silo=" + silo +
                 ", ware=" + ware +
                 ", quantity=" + quantity +
+                ", event=" + eventKind +
                 ", document='" + document + '\'' +
                 ", description='" + description + '\'' +
                 ", person=" + person +

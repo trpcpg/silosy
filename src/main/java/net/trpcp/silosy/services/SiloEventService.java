@@ -18,6 +18,7 @@ public interface SiloEventService {
     Set<SiloEvent> findByWare(Ware w);
     Set<SiloEvent> findByPerson(Person p);
     Set<SiloEvent> findByDocument(String s);
+    Set<SiloEvent> findBySiloOrderByEventTimeDesc(Silo s);
     Iterable<SiloEvent> findAll();
     SiloEvent save(SiloEvent se);
     void delete(SiloEvent se);

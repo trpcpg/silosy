@@ -46,6 +46,8 @@ public class SiloServiceImpl implements SiloService{
         return siloRepository.findAll();
     }
 
+    public Iterable<Silo> findAllOrderByName(){return siloRepository.findByOrderByName();}
+
     public Set<Silo> findAllById(Iterable<Long> iterable) {
         return (Set<Silo>) siloRepository.findAllById(iterable);
     }

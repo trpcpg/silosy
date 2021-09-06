@@ -81,6 +81,11 @@ public class SiloEventServiceImpl implements SiloEventService{
     }
 
     @Override
+    public Set<SiloEvent> findBySiloOrderByEventTimeDesc(Silo s) {
+        return siloEventRepository.findBySiloOrderByEventTimeDesc(s);
+    }
+
+    @Override
     public Iterable<SiloEvent> findAll() {
         return siloEventRepository.findAll();
     }

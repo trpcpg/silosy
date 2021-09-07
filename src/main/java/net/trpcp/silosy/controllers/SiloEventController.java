@@ -55,7 +55,12 @@ public class SiloEventController {
         mav.addObject("silos", siloset);
         mav.addObject("events", siloEventService.findBySilo(s));
         mav.addObject("newse", SiloEvent.builder().eventTime(LocalDateTime.now()).build());
-        mav.addObject("wares", wareService.findAll());
+        if(s.getWare().getId()==null){
+            mav.addObject("wares", wareService.findAll());
+        }
+        else{
+            mav.addObject("wares", s.getWare());
+        }
         mav.addObject("persons", personService.findAll());
         Iterable<SiloEvent> ses = siloEventService.findBySiloOrderByEventTimeDesc(siloService.findById(id));
         List<SiloEvent> sesl= new ArrayList<>();
@@ -65,15 +70,27 @@ public class SiloEventController {
         else se = new SiloEvent();
         List<EventKind> eks;
         if (s.getStored() == 0 || siloEventService.findBySilo(s).isEmpty()) {
+            System.out.println("----- empty -----");
             eks = eventKindService.findForEmpty();
         }
-        else if (s.getCapacity() < s.getStored() + s.getCapacity() * 0.05) {
+        else if (s.getCapacity() * 0.999 < s.getStored()) {
+            System.out.println("----- full -----");
             eks = eventKindService.findForFull();
         }
+        else if(s.getCapacity()*0.999>=s.getStored() && s.getStored()>=0){
+            System.out.println("----- used -----");
+            eks = eventKindService.findForUsed();
+            if(s.getStored()<s.getCapacity()*0.003){
+                System.out.println("----- and clear -----");
+                eks.add(eventKindService.findById(7L));
+            }
+        }
         else if (se.getEventKind().getId() == 5L) {
+            System.out.println("----- gas -----");
             eks = eventKindService.findForGased();
         }
         else{
+            System.out.println("----- else -----");
             eks = eventKindService.findAll();
         }
         mav.addObject("eks", eks);
@@ -93,11 +110,32 @@ public class SiloEventController {
                 siloEvent.setQuantity(s.getStored());
             }
             //totaj też rozdział na operacje z siblingiem
-            int amount = siloEvent.getQuantity()*siloEvent.getEventKind().getFactor();
+            float amount = siloEvent.getQuantity()*siloEvent.getEventKind().getFactor();
             if((s.getWare()==null || s.getStored()==0) && s.getId().equals(id)) s.setWare(siloEvent.getWare());
             s.setStored(s.getStored()+amount);
             if(siloEvent.getEventKind().getId()==3L || siloEvent.getEventKind().getId()==4L || siloEvent.getEventKind().getId()==6L){
                 targetSilo.setStored(targetSilo.getStored()-amount);
+                SiloEvent targetEvent = SiloEvent.builder()
+                        .quantity(siloEvent.getQuantity())
+                        .silo(targetSilo)
+                        .eventTime(siloEvent.getEventTime())
+                        .document(siloEvent.getDocument())
+                        .ware(siloEvent.getWare())
+                        .person(siloEvent.getPerson())
+                        .build();
+                if(siloEvent.getEventKind().getId()==3L){
+                    targetEvent.setEventKind(eventKindService.findById(4L));
+                    targetEvent.setDescription("przesunięcie z " + s.getName());
+                }
+                else if(siloEvent.getEventKind().getId()==4L){
+                    targetEvent.setEventKind(eventKindService.findById(3L));
+                    targetEvent.setDescription("przesunięcie na " + s.getName());
+                }
+                else if(siloEvent.getEventKind().getId()==6L){
+                    targetEvent.setEventKind(eventKindService.findById(4L));
+                    targetEvent.setDescription("wietrzenie z " + s.getName());
+                }
+                siloEventService.save(targetEvent);
             }
         }
         else{
@@ -113,7 +151,7 @@ public class SiloEventController {
             else if(siloEvent.getEventKind().getId()==7L && s.getCapacity()*0.02>s.getStored()){
                 s.setStatus(0);
                 s.setWare(null);
-                s.setStored(0);
+                s.setStored(0f);
             }
         }
 
@@ -127,7 +165,8 @@ public class SiloEventController {
         mav.addObject("silos", siloset);
         mav.addObject("events", siloEventService.findBySilo(siloService.findById(id)));
         mav.addObject("newse", SiloEvent.builder().eventTime(LocalDateTime.now()).build());
-        mav.addObject("wares", wareService.findAll());
+        if(s.getWare().getId()==null) mav.addObject("wares", wareService.findAll());
+        else mav.addObject("wares", s.getWare());
         mav.addObject("persons", personService.findAll());
 
         Iterable<SiloEvent> ses = siloEventService.findBySiloOrderByEventTimeDesc(siloService.findById(id));
@@ -137,18 +176,30 @@ public class SiloEventController {
         if(sesl.size()>0) se = sesl.get(0);
         else se = new SiloEvent();
 
-        Iterable<EventKind> eks;
+        List<EventKind> eks;
 
-        if (s.getStored() == 0) {
+        if (s.getStored() == 0 || siloEventService.findBySilo(s).isEmpty()) {
+            System.out.println("----- empty -----");
             eks = eventKindService.findForEmpty();
         }
-        else if (s.getCapacity() < s.getStored() + s.getCapacity() * 0.05) {
+        else if (s.getCapacity() * 0.999 < s.getStored()) {
+            System.out.println("----- full -----");
             eks = eventKindService.findForFull();
         }
+        else if(s.getCapacity()*0.999>=s.getStored() && s.getStored()>=0){
+            System.out.println("----- used -----");
+            eks = eventKindService.findForUsed();
+            if(s.getStored()<s.getCapacity()*0.003){
+                System.out.println("----- and clear -----");
+                eks.add(eventKindService.findById(7L));
+            }
+        }
         else if (se.getEventKind().getId() == 5L) {
+            System.out.println("----- gas -----");
             eks = eventKindService.findForGased();
         }
         else{
+            System.out.println("----- else -----");
             eks = eventKindService.findAll();
         }
         mav.addObject("eks", eks);

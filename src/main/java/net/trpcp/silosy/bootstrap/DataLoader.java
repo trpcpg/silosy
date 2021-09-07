@@ -59,10 +59,10 @@ public class DataLoader implements CommandLineRunner {
 
         Iterable<Silo> set = new HashSet<>();
 
-        siloService.save(Silo.builder().name("Silo1").capacity(13200).stored(0).status(0).build());
-        siloService.save(Silo.builder().name("Silo2").capacity(13400).stored(0).status(0).build());
-        siloService.save(Silo.builder().name("Silo3").capacity(12900).stored(0).status(0).build());
-        siloService.save(Silo.builder().name("Silo4").capacity(13100).stored(0).status(0).build());
+        siloService.save(Silo.builder().name("Silo1").capacity(13000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Silo2").capacity(13000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Silo3").capacity(13000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Silo4").capacity(13000f).stored(0f).status(0).build());
 
 //        Iterable<Silo> savedSilos = siloService.saveAll(set);
 //        List<Silo> siloList = new ArrayList<>();

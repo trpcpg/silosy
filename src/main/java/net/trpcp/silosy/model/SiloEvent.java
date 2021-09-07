@@ -24,7 +24,7 @@ public class SiloEvent extends BaseEntity{
     @JoinColumn(name = "ware_id")
     private Ware ware;
 
-    private Integer quantity;
+    private Float quantity;
     @OneToOne
     private EventKind eventKind;
     private String document;
@@ -35,7 +35,7 @@ public class SiloEvent extends BaseEntity{
     private Person person;
 
     @Builder
-    public SiloEvent(Long id, LocalDateTime eventTime, Silo silo, Ware ware, Integer quantity, EventKind eventKind, String document, String description, Person person) {
+    public SiloEvent(Long id, LocalDateTime eventTime, Silo silo, Ware ware, Float quantity, EventKind eventKind, String document, String description, Person person) {
         super(id);
         this.eventTime = eventTime;
         this.silo = silo;

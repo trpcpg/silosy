@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SiloTest {
 
     Silo silo;
-    Integer CAPACITY = 13000;
+    Float CAPACITY = 13000f;
     Long ID = 1L;
     String NAME = "prawy-górny";
 

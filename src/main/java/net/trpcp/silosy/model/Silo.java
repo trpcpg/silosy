@@ -16,8 +16,8 @@ import java.util.Set;
 public class Silo extends BaseEntity{
 
     private String name;
-    private Integer capacity;
-    private Integer stored;
+    private Float capacity;
+    private Float stored;
 
     @OneToOne
     private Ware ware;
@@ -29,7 +29,7 @@ public class Silo extends BaseEntity{
 
 
     @Builder
-    public Silo(Long id, String name, Integer capacity, Set<SiloEvent> events, Integer stored, Ware ware, Integer status) {
+    public Silo(Long id, String name, Float capacity, Set<SiloEvent> events, Float stored, Ware ware, Integer status) {
         super(id);
         this.name = name;
         this.capacity = capacity;

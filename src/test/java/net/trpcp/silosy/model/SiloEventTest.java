@@ -12,9 +12,9 @@ class SiloEventTest {
     SiloEvent se;
     Long id = 1L;
     LocalDateTime now = LocalDateTime.now();
-    Silo silo = Silo.builder().id(4L).name("piatka").capacity(13000).build();
+    Silo silo = Silo.builder().id(4L).name("piatka").capacity(13000f).build();
     Ware ware = Ware.builder().id(3L).name("kukurydza").build();
-    Integer quantity = 123;
+    Float quantity = 123f;
     String document = "doc number";
     String description = "some description";
     Person person = Person.builder().id(2L).firstName("Tom").lastName("Bram").build();

@@ -28,9 +28,19 @@ public class EventKindServiceImpl implements EventKindService {
     }
 
     @Override
+    public List<EventKind> findForUsed() {
+        List<EventKind> rl = new ArrayList<>();
+        long[] l = {1L, 2L, 3L, 4L, 5L, 6L, 8L};
+        for (long il : l) {
+            rl.add(eventKindRepository.findById(il).orElse(null));
+        }
+        return rl;
+    }
+
+    @Override
     public List<EventKind> findForEmpty() {
         List<EventKind> rl = new ArrayList<>();
-        long[] l = {1L, 3L, 7L};
+        long[] l = {1L, 4L, 7L};
         for (long il : l) {
             rl.add(eventKindRepository.findById(il).orElse(null));
         }
@@ -40,7 +50,7 @@ public class EventKindServiceImpl implements EventKindService {
     @Override
     public List<EventKind> findForFull() {
         List<EventKind> rl = new ArrayList<>();
-        long[] l = {2L, 4L, 5L};
+        long[] l = {2L, 3L, 5L};
         for (long il : l) {
             rl.add(eventKindRepository.findById(il).orElse(null));
         }
@@ -59,6 +69,11 @@ public class EventKindServiceImpl implements EventKindService {
         List<EventKind> rl = new ArrayList<>();
         rl.add(eventKindRepository.findById(9L).orElse(null));
         return rl;
+    }
+
+    @Override
+    public List<EventKind> findAllByIdLike(Long id) {
+        return new ArrayList<>(eventKindRepository.findAllByIdLike(id));
     }
 
     @Override

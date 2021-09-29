@@ -3,6 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Silosy</title>
+    <style>
+        input.error {
+            border: 2px solid red;
+        }
+        div.error{
+            color:red;
+        }
+        td.forms{
+            width: 150px
+        }
+    </style>
 </head>
 <body>
 <p th:text="${ss}">aqq</p>
@@ -11,24 +22,40 @@
     <tr>
         <td>Nazwa</td>
         <td>Pojemność</td>
-        <td>Towar</td>
-        <td>ilość</td>
     </tr>
     </thead>
     <tbody>
     <tr th:each="silo,siloStat : ${silos}">
         <td th:text="${silo.name}">456</td>
         <td th:text="${silo.capacity}"></td>
-        <td th:text="${silo.ware.name}"></td>
-        <td th:text="${silo.amount}"></td>
         <td><a href="#" th:href="@{'/modsilo/' + ${siloStat.index}}">Zmień</a></td>
         <td><a href="#" th:href="@{'/delsilo/' + ${siloStat.index}}">Delete</a></td>
     </tr>
     </tbody>
 </table>
 <form th:object="${news}" method="post">
-    <input type="text" th:field="*{name}"/>
-    <input type="text" th:field="*{capacity}"/>
+    <table>
+        <tr>
+            <td class="forms"><input th:class="${#fields.hasErrors('name')?'error':''}" type="text" th:field="*{name}"  th:errorClass="has-error"/></td>
+            <td class="forms"><input th:class="${#fields.hasErrors('capacity')?'error':''}" type="text" th:field="*{capacity}"  th:errorClass="has-error"/></td>
+        </tr>
+        <tr>
+            <td class="forms">
+                <div th:if="${#fields.hasErrors('name')}" class="error">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </td>
+            <td class="forms">
+                <div th:if="${#fields.hasErrors('capacity')}" class="error">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('capacity')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </table>
     <button
         th:with="text=${news.id}==null ? 'Add Silo' : 'Update Silo'"
         type="submit" th:text="${text}">Add Silo

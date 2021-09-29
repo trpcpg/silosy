@@ -5,7 +5,12 @@ import net.trpcp.silosy.model.Person;
 import net.trpcp.silosy.services.PersonService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -27,14 +32,26 @@ public class PersonControler {
     }
 
     @PostMapping("modperson/{ido}")
-    public String modPerson(Model model, @ModelAttribute("newp") Person person, @PathVariable("ido") String id){
+    public String modPerson(@Valid @ModelAttribute("newp") Person person, BindingResult bindingResult, @PathVariable("ido") String id, @ModelAttribute("persons") ArrayList<Person> persons, Model model){
+        if(bindingResult.hasErrors()){
+            Iterable<Person> personSet = personService.findAll();
+            model.addAttribute("persons", personSet);
+            System.out.println("-------blad-------");
+            return "person";
+        }
         person.setId(Long.valueOf(id));
         Person savedPerson = personService.save(person);
         return "redirect:/person";
     }
 
     @PostMapping("person")
-    public String addPerson(Model model, @ModelAttribute("newp") Person person){
+    public String addPerson(Model model, @Valid @ModelAttribute("newp") Person person, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            Iterable<Person> personSet = personService.findAll();
+            model.addAttribute("persons", personSet);
+            System.out.println("-------blad-------");
+            return "person";
+        }
         Person savedPerson = personService.save(person);
         return "redirect:/person";
     }

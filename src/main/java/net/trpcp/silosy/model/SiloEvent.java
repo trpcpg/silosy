@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -11,7 +12,7 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @Entity
-public class SiloEvent extends BaseEntity{
+public class SiloEvent extends BaseEntity {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime eventTime;
@@ -25,11 +26,18 @@ public class SiloEvent extends BaseEntity{
     private Ware ware;
 
     private Float quantity;
+
     @OneToOne
     private EventKind eventKind;
+
+    @Size(max = 50)
     private String document;
+
+    @NotEmpty
+    @Size(min=5,max = 255)
     private String description;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private Person person;

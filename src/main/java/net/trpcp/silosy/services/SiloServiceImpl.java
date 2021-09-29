@@ -1,6 +1,7 @@
 package net.trpcp.silosy.services;
 
 import lombok.extern.slf4j.Slf4j;
+import net.trpcp.silosy.exceptions.NotFoundException1;
 import net.trpcp.silosy.model.Silo;
 import net.trpcp.silosy.repositories.SiloRepository;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,7 @@ import java.util.Set;
 
 @Slf4j
 @Service
-public class SiloServiceImpl implements SiloService{
+public class SiloServiceImpl implements SiloService {
 
     SiloRepository siloRepository;
 
@@ -34,8 +35,12 @@ public class SiloServiceImpl implements SiloService{
         return siloRepository.saveAll(silos);
     }
 
-    public Silo findById(Long aLong) {
-        return siloRepository.findById(aLong).orElse(null);
+    public Optional<Silo> findById(Long aLong) {
+//        Optional<Silo> returnedSilo = siloRepository.findById(aLong);
+//        if (!returnedSilo.isPresent()) {
+//            throw new NotFoundException("Nie odnaleziono silosa nr " + aLong);
+//        }
+        return siloRepository.findById(aLong);
     }
 
     public boolean existsById(Long aLong) {
@@ -46,7 +51,9 @@ public class SiloServiceImpl implements SiloService{
         return siloRepository.findAll();
     }
 
-    public Iterable<Silo> findAllOrderByName(){return siloRepository.findByOrderByName();}
+    public Iterable<Silo> findAllOrderByName() {
+        return siloRepository.findByOrderByName();
+    }
 
     public Set<Silo> findAllById(Iterable<Long> iterable) {
         return (Set<Silo>) siloRepository.findAllById(iterable);

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,6 +17,8 @@ import java.util.Set;
 @Entity
 public class Ware extends BaseEntity{
 
+    @NotNull
+    @NotBlank
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ware", fetch = FetchType.LAZY)

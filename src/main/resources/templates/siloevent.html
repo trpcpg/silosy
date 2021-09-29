@@ -17,6 +17,10 @@
             }
             console.log(s.value);
         }
+
+        function comma_dot(){
+            document.getElementById("quantity1").value = document.getElementById("quantity1").value.replace(',','.')
+        }
     </script>
     <style>
         .circle {
@@ -37,6 +41,12 @@
         }
         table.l {
             margin: 0 auto; /* or margin: 0 auto 0 auto */
+        }
+        input.error {
+            border: 2px solid red;
+        }
+        div.error{
+            color:red;
         }
     </style>
 </head>
@@ -60,7 +70,10 @@
 <!--    <div class="circle"></div><div class="circle"></div>-->
 <!--</div>-->
 <div th:text="${silo}"></div>
-<form th:object="${newse}" method="post">
+<!--<div th:if="${#fields.hasErrors('*')}">-->
+<!--    <p>Popraw błędy poniżej</p>-->
+<!--</div>-->
+<form th:object="${siloevent}" method="post">
     <table>
         <tr>
             <th>Data</th><th>Towar</th><th>Ilość</th><th>Czynność</th><th>Dokument</th><th>Opis</th><th>Kto</th>
@@ -68,20 +81,27 @@
         <tr th:each="event : ${events}">
             <td th:text="${event.eventTime}"></td>
             <td th:text="${event.ware.name}"></td>
-            <td th:text="${event.quantity}"></td>
+            <td th:text="${#numbers.formatDecimal(event.quantity,0,2,'COMMA')}"></td>
             <td th:text="${event.eventKind.name}"></td>
             <td th:text="${event.document}"></td>
             <td th:text="${event.description}"></td>
             <td th:text="${event.person.firstName} + ' ' + ${event.person.lastName}"></td>
         </tr>
         <tr>
-            <td><input th:field="${newse.eventTime}" type="datetime-local"/></td>
+            <td><input th:field="${siloevent.eventTime}" type="datetime-local"/></td>
             <td>
                 <select th:field="*{ware}">
                     <option th:each="w : ${wares}" th:value="${w.id}" th:text="${w.name}"></option>
                 </select>
             </td>
-            <td><input th:field="${newse.quantity}"/></td>
+            <td>
+                <input th:class="${#fields.hasErrors('quantity')}?'error':''" th:field="${siloevent.quantity}" th:errorClass="has-error" id="quantity1"/>
+                <div class="error" style="position: absolute" th:if="${#fields.hasErrors('quantity')}">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('quantity')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </td>
             <td>
                 <select id="kind" onchange="targetfetch()" th:field="*{eventKind}">
                     <option value="0">---wybierz---</option>
@@ -94,8 +114,22 @@
                     </select>
                 </div>
             </td>
-            <td><input th:field="${newse.document}"/></td>
-            <td><input th:field="${newse.description}"/></td>
+            <td>
+                <input th:class="${#fields.hasErrors('document')}?'error':''" th:field="${siloevent.document}"/>
+                <div class="error" style="position: absolute" th:if="${#fields.hasErrors('document')}">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('document')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </td>
+            <td>
+                <input th:class="${#fields.hasErrors('description')}?'error':''" th:field="${siloevent.description}"/>
+                <div class="error" style="position: absolute" th:if="${#fields.hasErrors('description')}">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('description')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </td>
             <td>
                 <select th:field="*{person}">
                     <option th:each="p : ${persons}" th:value="${p.id}" th:text="${p.firstName}+' '+${p.lastName}"></option>
@@ -103,7 +137,7 @@
             </td>
         </tr>
     </table>
-    <button type="submit">Zapisz</button>
+    <button type="submit" onclick="comma_dot()">Zapisz</button>
 </form>
 </body>
 </html>

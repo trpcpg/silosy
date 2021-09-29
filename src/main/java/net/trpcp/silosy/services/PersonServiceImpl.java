@@ -1,9 +1,11 @@
 package net.trpcp.silosy.services;
 
+import net.trpcp.silosy.exceptions.NotFoundException1;
 import net.trpcp.silosy.model.Person;
 import net.trpcp.silosy.repositories.PersonRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -17,7 +19,9 @@ public class PersonServiceImpl implements net.trpcp.silosy.services.PersonServic
 
     @Override
     public Person findById(Long l) {
-        return personRepository.findById(l).orElse(null);
+        Optional<Person> returnedPerson = personRepository.findById(l);
+        if(returnedPerson.isEmpty()) throw new NotFoundException1("Osoba o podanym ID nie istnieje");
+        return returnedPerson.get();
     }
 
     @Override

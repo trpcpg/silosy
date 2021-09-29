@@ -2,6 +2,7 @@ package net.trpcp.silosy.services;
 
 import net.trpcp.silosy.model.Silo;
 
+import java.util.Optional;
 import java.util.Set;
 
 public interface SiloService {
@@ -10,7 +11,7 @@ public interface SiloService {
 
     Iterable<Silo> findAllOrderByName();
 
-    Silo findById(Long id);
+    Optional<Silo> findById(Long id);
 
     Silo findByName(String s);
     Set<Silo> findByNameLike(String s);

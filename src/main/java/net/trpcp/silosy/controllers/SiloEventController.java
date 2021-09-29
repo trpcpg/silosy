@@ -1,17 +1,26 @@
 package net.trpcp.silosy.controllers;
 
+import net.trpcp.silosy.exceptions.NotFoundException1;
 import net.trpcp.silosy.model.EventKind;
 import net.trpcp.silosy.model.Silo;
 import net.trpcp.silosy.model.SiloEvent;
 import net.trpcp.silosy.model.Ware;
 import net.trpcp.silosy.services.*;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 @Controller
 public class SiloEventController {
@@ -46,7 +55,11 @@ public class SiloEventController {
     public ModelAndView getEvents(@PathVariable("nr") Long id) {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/siloevent");
-        Silo s = siloService.findById(id);
+        Optional<Silo> os1 = siloService.findById(id);
+        if(os1.isEmpty()){
+            throw new NotFoundException1("Nie odnaleziono silosa nr " + id);
+        }
+        Silo s = os1.get();
         mav.addObject("silo", s);
         Iterable<Silo> siloset = siloService.findAllOrderByName();
         siloset.forEach(silo -> {
@@ -54,7 +67,7 @@ public class SiloEventController {
         });
         mav.addObject("silos", siloset);
         mav.addObject("events", siloEventService.findBySilo(s));
-        mav.addObject("newse", SiloEvent.builder().eventTime(LocalDateTime.now()).build());
+        mav.addObject("siloevent", SiloEvent.builder().eventTime(LocalDateTime.now()).build());
         if(s.getWare().getId()==null){
             mav.addObject("wares", wareService.findAll());
         }
@@ -62,7 +75,7 @@ public class SiloEventController {
             mav.addObject("wares", s.getWare());
         }
         mav.addObject("persons", personService.findAll());
-        Iterable<SiloEvent> ses = siloEventService.findBySiloOrderByEventTimeDesc(siloService.findById(id));
+        Iterable<SiloEvent> ses = siloEventService.findBySiloOrderByEventTimeDesc(s);
         List<SiloEvent> sesl= new ArrayList<>();
         ses.forEach(sesl::add);
         SiloEvent se;
@@ -98,12 +111,76 @@ public class SiloEventController {
     }
 
     @PostMapping("siloevent/{nr}")
-    public ModelAndView saveEvent(@ModelAttribute("newse") SiloEvent siloEvent, @ModelAttribute("targetsilo") Silo targetSilo, @PathVariable("nr") Long id) {
-        ModelAndView mav = new ModelAndView("siloevent");
+    public String saveEvent(@Valid @ModelAttribute("siloevent") SiloEvent siloEvent, BindingResult bindingResult, @ModelAttribute("targetsilo") Silo targetSilo, @PathVariable("nr") Long id, Model model) {
+
+        if(bindingResult.hasErrors()){
+
+            Optional<Silo> os1 = siloService.findById(id);
+            if(os1.isEmpty()){
+                throw new NotFoundException1("Nie odnaleziono silosa nr " + id);
+            }
+            Silo s = os1.get();
+            model.addAttribute("silo", s);
+            Iterable<Silo> siloset = siloService.findAllOrderByName();
+            siloset.forEach(silo -> {
+                if(silo.getWare()==null) silo.setWare(Ware.builder().name("").build());
+            });
+            model.addAttribute("silos", siloset);
+            model.addAttribute("events", siloEventService.findBySilo(s));
+            //model.addAttribute("siloevent", siloEvent);
+            if(s.getWare().getId()==null){
+                model.addAttribute("wares", wareService.findAll());
+            }
+            else{
+                model.addAttribute("wares", s.getWare());
+            }
+            model.addAttribute("persons", personService.findAll());
+            Iterable<SiloEvent> ses = siloEventService.findBySiloOrderByEventTimeDesc(s);
+            List<SiloEvent> sesl= new ArrayList<>();
+            ses.forEach(sesl::add);
+            SiloEvent se;
+            if(sesl.size()>0) se = sesl.get(0);
+            else se = new SiloEvent();
+            List<EventKind> eks;
+            if (s.getStored() == 0 || siloEventService.findBySilo(s).isEmpty()) {
+                System.out.println("----- empty -----");
+                eks = eventKindService.findForEmpty();
+            }
+            else if (s.getCapacity() * 0.999 < s.getStored()) {
+                System.out.println("----- full -----");
+                eks = eventKindService.findForFull();
+            }
+            else if(s.getCapacity()*0.999>=s.getStored() && s.getStored()>=0){
+                System.out.println("----- used -----");
+                eks = eventKindService.findForUsed();
+                if(s.getStored()<s.getCapacity()*0.003){
+                    System.out.println("----- and clear -----");
+                    eks.add(eventKindService.findById(7L));
+                }
+            }
+            else if (se.getEventKind().getId() == 5L) {
+                System.out.println("----- gas -----");
+                eks = eventKindService.findForGased();
+            }
+            else{
+                System.out.println("----- else -----");
+                eks = eventKindService.findAll();
+            }
+            model.addAttribute("eks", eks);
+
+            bindingResult.getAllErrors().forEach(objectError -> System.out.println("-----"+objectError.toString()+"-----"));
+            return "siloevent";
+        }
+
+        //ModelAndView mav = new ModelAndView("siloevent");
         //System.out.println(targetSilo.getName());
-        Silo s = siloService.findById(id);
+        Optional<Silo> os1 = siloService.findById(id);
+        if(os1.isEmpty()){
+            throw new NotFoundException1("Nie odnaleziono silosa nr " + id);
+        }
+        Silo s = os1.get();
         siloEvent.setSilo(s);
-        mav.addObject("silo", s);
+        model.addAttribute("silo", s);
         if(siloEvent.getEventKind().getFactor()!=0){
             if(siloEvent.getEventKind().getId()==6L){
                 s.setStatus(0);
@@ -162,14 +239,14 @@ public class SiloEventController {
         siloset.forEach(silo -> {
             if(silo.getWare()==null) silo.setWare(Ware.builder().name("").build());
         });
-        mav.addObject("silos", siloset);
-        mav.addObject("events", siloEventService.findBySilo(siloService.findById(id)));
-        mav.addObject("newse", SiloEvent.builder().eventTime(LocalDateTime.now()).build());
-        if(s.getWare().getId()==null) mav.addObject("wares", wareService.findAll());
-        else mav.addObject("wares", s.getWare());
-        mav.addObject("persons", personService.findAll());
+        model.addAttribute("silos", siloset);
+        model.addAttribute("events", siloEventService.findBySilo(s));
+        model.addAttribute("siloevent", SiloEvent.builder().eventTime(LocalDateTime.now()).build());
+        if(s.getWare().getId()==null) model.addAttribute("wares", wareService.findAll());
+        else model.addAttribute("wares", s.getWare());
+        model.addAttribute("persons", personService.findAll());
 
-        Iterable<SiloEvent> ses = siloEventService.findBySiloOrderByEventTimeDesc(siloService.findById(id));
+        Iterable<SiloEvent> ses = siloEventService.findBySiloOrderByEventTimeDesc(s);
         List<SiloEvent> sesl= new ArrayList<>();
         ses.forEach(sesl::add);
         SiloEvent se;
@@ -202,7 +279,8 @@ public class SiloEventController {
             System.out.println("----- else -----");
             eks = eventKindService.findAll();
         }
-        mav.addObject("eks", eks);
-        return mav;
+        model.addAttribute("eks", eks);
+
+        return "siloevent";
     }
 }

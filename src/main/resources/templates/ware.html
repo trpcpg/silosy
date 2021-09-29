@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Silosy - Towary</title>
+    <style>
+        input.error {
+            border: 2px solid red;
+        }
+        div.error{
+            color:red;
+        }
+    </style>
 </head>
 <body>
 <table>
@@ -16,8 +24,13 @@
     </tr>
 </table>
 <form th:object="${neww}" method="post">
-    <label>Nazwa:</label><input type="text" th:field="*{name}"/>
+    <label>Nazwa:</label><input th:class="${#fields.hasErrors('name')}?'error':''" type="text" th:field="*{name}" th:errorClass="has-error"/>
     <button th:with="text=${neww.id}==null? 'Dodaj towar' : 'Zmień towar'" th:text="${text}" type="submit">Dodaj towar</button>
+    <div th:if="${#fields.hasErrors('name')}" class="error">
+        <ul>
+            <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+        </ul>
+    </div>
 </form>
 </body>
 </html>

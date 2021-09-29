@@ -3,6 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Osoby</title>
+    <style>
+        div.error{
+            color:red;
+        }
+        input.error{
+            border: solid 1px red;
+        }
+        td.forms{
+            width: 150px
+        }
+    </style>
 </head>
 <body>
 <table>
@@ -24,48 +35,32 @@
 <form th:object="${newp}" method="post">
     <table>
         <tr>
-            <th>Inię</th><th>Nazwisko</th>
+            <th>Imię</th><th>Nazwisko</th>
         </tr>
         <tr>
-            <td><input type="text" th:field="*{firstName}"/></td><td><input type="text" th:field="*{lastName}"/></td>
+            <td class="forms">
+                <input th:class="${#fields.hasErrors('firstName')}?'error':''" type="text" th:field="*{firstName}"/>
+
+            </td>
+            <td>
+                <input type="text" th:field="*{lastName}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div th:if="${#fields.hasErrors('firstName')}" class="error">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('firstName')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </td>
+            <td></td>
         </tr>
     </table>
-
-
     <button
             th:with="text=${newp.id}==null ? 'Dodaj osobę' : 'Zmień dane'"
             type="submit" th:text="${text}">Dodaj osobę
     </button>
 </form>
-<!--<div th:if="${newp.id}">-->
-<!--    <form th:object="${newp}" th:action="@{'/modperson/' + ${newp.id}}" method="post">-->
-<!--        <table>-->
-<!--            <tr>-->
-<!--                <th>imie</th>-->
-<!--                <th>nazwisko</th>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td><input type="text" th:field="${newp.firstName}"></td>-->
-<!--                <td><input type="text" th:field="${newp.lastName}"></td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--        <button type="submit">Zapisz</button>-->
-<!--    </form>-->
-<!--</div>-->
-<!--<div th:if="not ${newp.id}">-->
-<!--    <form th:object="${newp}" th:action="@{/addperson/}" method="post">-->
-<!--        <table>-->
-<!--            <tr>-->
-<!--                <th>imie</th>-->
-<!--                <th>nazwisko</th>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td><input type="text" th:field="${newp.firstName}"></td>-->
-<!--                <td><input type="text" th:field="${newp.lastName}"></td>-->
-<!--            </tr>-->
-<!--        </table>-->
-<!--        <button type="submit">Zapisz</button>-->
-<!--    </form>-->
-<!--</div>-->
 </body>
 </html>

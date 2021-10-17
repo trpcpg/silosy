@@ -14,7 +14,7 @@ import java.util.Objects;
 @Entity
 public class SiloEvent extends BaseEntity {
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime eventTime;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -33,7 +33,6 @@ public class SiloEvent extends BaseEntity {
     @Size(max = 50)
     private String document;
 
-    @NotEmpty
     @Size(min=5,max = 255)
     private String description;
 

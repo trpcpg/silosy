@@ -48,7 +48,7 @@
             <table class="l">
                 <tr><td class="l" th:text="${eachsilo.name}"></td></tr>
                 <tr><td class="l" th:text="${eachsilo.stored + 't'}"></td>
-                </tr><tr><td class="l" th:text="${eachsilo.ware.name}"></td></tr>
+                </tr><tr><td class="l" th:if="${eachsilo.ware}" th:text="${eachsilo.ware.name}"></td></tr>
             </table>
         </div><!--<div style="display:inline-block" class="circle"></div>-->
         <div class="circle" style="display:inline-block" th:remove="all">1110t</div>

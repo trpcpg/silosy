@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.Set;
 
@@ -62,7 +63,7 @@ public class Silo extends BaseEntity{
                 "nazwa: " + name +
                 ", pojemność: " + capacity +
                 "[t], obecnie: " + stored +
-                "[t], towar: " + ware.getName() +
+                "[t], towar: " + ware +
                 ", status: " + status;
     }
 }

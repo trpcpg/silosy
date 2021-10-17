@@ -21,15 +21,15 @@ import java.util.Set;
 public class SiloEventServiceImpl implements SiloEventService{
 
     SiloEventRepository siloEventRepository;
-    SiloRepository siloRepository;
-    PersonRepository personRepository;
-    WareRepository wareRepository;
+    SiloService siloService;
+    PersonService personService;
+    WareService wareService;
 
-    public SiloEventServiceImpl(SiloEventRepository siloEventRepository, SiloRepository siloRepository, PersonRepository personRepository, WareRepository wareRepository) {
+    public SiloEventServiceImpl(SiloEventRepository siloEventRepository, SiloService siloService, PersonService personService, WareService wareService) {
         this.siloEventRepository = siloEventRepository;
-        this.siloRepository = siloRepository;
-        this.personRepository = personRepository;
-        this.wareRepository = wareRepository;
+        this.siloService = siloService;
+        this.personService = personService;
+        this.wareService = wareService;
     }
 
     @Override
@@ -50,13 +50,13 @@ public class SiloEventServiceImpl implements SiloEventService{
 
     @Override
     public Set<SiloEvent> findBySiloName(String s) {
-        Silo it = siloRepository.findByName(s);
+        Silo it = siloService.findByName(s);
         return siloEventRepository.findBySilo(it);
     }
 
     @Override
     public Set<SiloEvent> findBySilo_id(Long id) {
-        Optional<Silo> o = siloRepository.findById(id);
+        Optional<Silo> o = siloService.findById(id);
         if(o.isPresent()){
             return siloEventRepository.findBySilo(o.get());
         }

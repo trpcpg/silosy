@@ -6,21 +6,19 @@ import net.trpcp.silosy.model.Silo;
 import net.trpcp.silosy.model.SiloEvent;
 import net.trpcp.silosy.model.Ware;
 import net.trpcp.silosy.services.*;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
+import org.thymeleaf.spring5.ISpringTemplateEngine;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class SiloEventController {
@@ -39,14 +37,21 @@ public class SiloEventController {
         this.eventKindService = eventKindService;
     }
 
+    private ISpringTemplateEngine templateEngine(ITemplateResolver templateResolver) {
+        SpringTemplateEngine engine = new SpringTemplateEngine();
+        engine.addDialect(new Java8TimeDialect());
+        engine.setTemplateResolver(templateResolver);
+        return engine;
+    }
+
     @GetMapping({"","index","/","index.html"})
     public ModelAndView getFirst(){
         ModelAndView mav = new ModelAndView();
         mav.setViewName("index");
         Iterable<Silo> siloset = siloService.findAllOrderByName();
-        siloset.forEach(silo -> {
-            if(silo.getWare()==null) silo.setWare(Ware.builder().name("").build());
-        });
+//        siloset.forEach(silo -> {
+//            if(silo.getWare()==null) silo.setWare(Ware.builder().name("").build());
+//        });
         mav.addObject("silos", siloset);
         return mav;
     }
@@ -62,13 +67,10 @@ public class SiloEventController {
         Silo s = os1.get();
         mav.addObject("silo", s);
         Iterable<Silo> siloset = siloService.findAllOrderByName();
-        siloset.forEach(silo -> {
-            if(silo.getWare()==null) silo.setWare(Ware.builder().name("").build());
-        });
         mav.addObject("silos", siloset);
         mav.addObject("events", siloEventService.findBySilo(s));
         mav.addObject("siloevent", SiloEvent.builder().eventTime(LocalDateTime.now()).build());
-        if(s.getWare().getId()==null){
+        if(s.getWare()==null){
             mav.addObject("wares", wareService.findAll());
         }
         else{
@@ -111,24 +113,68 @@ public class SiloEventController {
     }
 
     @PostMapping("siloevent/{nr}")
-    public String saveEvent(@Valid @ModelAttribute("siloevent") SiloEvent siloEvent, BindingResult bindingResult, @ModelAttribute("targetsilo") Silo targetSilo, @PathVariable("nr") Long id, Model model) {
+    public String saveEvent(@Valid @ModelAttribute("siloevent") SiloEvent siloEvent, BindingResult bindingResult, @ModelAttribute("targetsilo") Long targetSilo, @PathVariable("nr") Long id, Model model) {
 
+        Silo targetSiloO = new Silo();
+        if(targetSilo!=0){
+            targetSiloO = siloService.findById(targetSilo).orElse(null);
+        }
+        Optional<Silo> os1 = siloService.findById(id);
+        if(os1.isEmpty()){
+            throw new NotFoundException1("Nie odnaleziono silosa nr " + id);
+        }
+        if(siloEvent.getEventKind()==null){
+            bindingResult.rejectValue("eventKind", "EventKindNull.news.ware");
+        }
+        else{
+            if(siloEvent.getQuantity()==null && siloEvent.getEventKind().getFactor()!=0){
+                bindingResult.rejectValue("quantity", "NullQuantity.news.quantity");
+            }
+        }
+        Silo s = os1.get();
+        System.out.println("---------"+s.getWare().getId()+" "+s.getName());
+        if(targetSiloO.getWare()!=null) {
+            if (!siloEvent.getWare().getId().equals(targetSiloO.getWare().getId())) {
+                bindingResult.rejectValue("ware", "WareDiscrepency.target.ware");
+            }
+        }
+        if(siloEvent.getQuantity()!=null) {
+            if (s.getStored() == null) {
+                s.setStored(0f);
+            }
+            if (targetSiloO.getStored() == null) {
+                targetSiloO.setStored(0f);
+            }
+            float amount = siloEvent.getQuantity() * siloEvent.getEventKind().getFactor();
+            float stored1 = s.getStored() + amount;
+            if (stored1 < 0f) {
+                bindingResult.rejectValue("quantity", "NegativeQuantity.news.quantity");
+            }
+            float stored2;
+            if (targetSiloO.getId() != null) {
+                stored2 = targetSiloO.getStored() - amount;
+                if (stored2 < 0f) {
+                    bindingResult.rejectValue("quantity", "NegativeQuantity.target.quantity");
+                }
+            }
+            if (stored1 > s.getCapacity()) {
+                bindingResult.rejectValue("quantity", "SiloOverflow.news.quantity");
+            }
+            if (targetSiloO.getId() != null) {
+                stored2 = targetSiloO.getStored() - amount;
+                if (stored2 > targetSiloO.getCapacity()) {
+                    bindingResult.rejectValue("quantity", "SiloOverflow.target.quantity");
+                }
+            }
+        }
         if(bindingResult.hasErrors()){
 
-            Optional<Silo> os1 = siloService.findById(id);
-            if(os1.isEmpty()){
-                throw new NotFoundException1("Nie odnaleziono silosa nr " + id);
-            }
-            Silo s = os1.get();
             model.addAttribute("silo", s);
             Iterable<Silo> siloset = siloService.findAllOrderByName();
-            siloset.forEach(silo -> {
-                if(silo.getWare()==null) silo.setWare(Ware.builder().name("").build());
-            });
             model.addAttribute("silos", siloset);
             model.addAttribute("events", siloEventService.findBySilo(s));
             //model.addAttribute("siloevent", siloEvent);
-            if(s.getWare().getId()==null){
+            if(s.getWare()==null){
                 model.addAttribute("wares", wareService.findAll());
             }
             else{
@@ -171,30 +217,22 @@ public class SiloEventController {
             bindingResult.getAllErrors().forEach(objectError -> System.out.println("-----"+objectError.toString()+"-----"));
             return "siloevent";
         }
-
-        //ModelAndView mav = new ModelAndView("siloevent");
-        //System.out.println(targetSilo.getName());
-        Optional<Silo> os1 = siloService.findById(id);
-        if(os1.isEmpty()){
-            throw new NotFoundException1("Nie odnaleziono silosa nr " + id);
-        }
-        Silo s = os1.get();
         siloEvent.setSilo(s);
         model.addAttribute("silo", s);
         if(siloEvent.getEventKind().getFactor()!=0){
+            float amount = siloEvent.getQuantity() * siloEvent.getEventKind().getFactor();
             if(siloEvent.getEventKind().getId()==6L){
                 s.setStatus(0);
                 siloEvent.setQuantity(s.getStored());
             }
-            //totaj też rozdział na operacje z siblingiem
-            float amount = siloEvent.getQuantity()*siloEvent.getEventKind().getFactor();
             if((s.getWare()==null || s.getStored()==0) && s.getId().equals(id)) s.setWare(siloEvent.getWare());
             s.setStored(s.getStored()+amount);
             if(siloEvent.getEventKind().getId()==3L || siloEvent.getEventKind().getId()==4L || siloEvent.getEventKind().getId()==6L){
-                targetSilo.setStored(targetSilo.getStored()-amount);
+                targetSiloO.setStored(targetSiloO.getStored()-amount);
+                targetSiloO.setWare(siloEvent.getWare());
                 SiloEvent targetEvent = SiloEvent.builder()
                         .quantity(siloEvent.getQuantity())
-                        .silo(targetSilo)
+                        .silo(targetSiloO)
                         .eventTime(siloEvent.getEventTime())
                         .document(siloEvent.getDocument())
                         .ware(siloEvent.getWare())
@@ -233,16 +271,13 @@ public class SiloEventController {
         }
 
         siloEventService.save(siloEvent);
-        siloService.save(s);
+        //siloService.save(s);
 
         Iterable<Silo> siloset = siloService.findAllOrderByName();
-        siloset.forEach(silo -> {
-            if(silo.getWare()==null) silo.setWare(Ware.builder().name("").build());
-        });
         model.addAttribute("silos", siloset);
         model.addAttribute("events", siloEventService.findBySilo(s));
         model.addAttribute("siloevent", SiloEvent.builder().eventTime(LocalDateTime.now()).build());
-        if(s.getWare().getId()==null) model.addAttribute("wares", wareService.findAll());
+        if(s.getWare()==null) model.addAttribute("wares", wareService.findAll());
         else model.addAttribute("wares", s.getWare());
         model.addAttribute("persons", personService.findAll());
 

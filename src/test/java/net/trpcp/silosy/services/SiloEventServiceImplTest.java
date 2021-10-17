@@ -1,59 +1,135 @@
 package net.trpcp.silosy.services;
 
-import net.trpcp.silosy.exceptions.NotFoundException1;
-import net.trpcp.silosy.model.Silo;
-import net.trpcp.silosy.repositories.SiloRepository;
-import org.hibernate.jdbc.Expectations;
+import net.trpcp.silosy.model.*;
+import net.trpcp.silosy.repositories.SiloEventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 class SiloEventServiceImplTest {
 
     @Mock
-    SiloRepository siloRepository;
+    SiloEventRepository siloEventRepository;
+    @Mock
+    SiloService siloService;
+    @Mock
+    PersonService personService;
+    @Mock
+    WareService wareService;
 
-    SiloServiceImpl siloServiceImpl;
+    SiloEventService siloEventService;
+
+    Long ID = 1L;
+    SiloEvent se1;
+    SiloEvent se2;
+    Set<SiloEvent> ses;
+    LocalDateTime eventTime = LocalDateTime.now();
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        siloServiceImpl = new SiloServiceImpl(siloRepository);
-    }
+        siloEventService = new SiloEventServiceImpl(siloEventRepository,siloService, personService, wareService);
+        se1 = SiloEvent.builder()
+                .id(ID)
+                .eventTime(eventTime)
+                .eventKind(EventKind.builder()
+                        .id(2L)
+                        .build()
+                )
+                .person(Person.builder()
+                        .firstName("Tom")
+                        .build()
+                )
+                .ware(Ware.builder()
+                        .name("przenica")
+                        .build()
+                )
+                .quantity(123f)
+                .document("doc")
+                .description("desc")
+                .silo(Silo.builder()
+                        .id(3L)
+                        .name("Silo1")
+                        .capacity(12000f)
+                        .build()
+                )
+                .build();
+        se2 = SiloEvent.builder()
+                .id(ID)
+                .eventTime(eventTime)
+                .eventKind(EventKind.builder()
+                        .id(4L)
+                        .build()
+                )
+                .person(Person.builder()
+                        .firstName("Wol")
+                        .build()
+                )
+                .ware(Ware.builder()
+                        .name("kukurydza")
+                        .build()
+                )
+                .quantity(123f)
+                .document("doc")
+                .description("desc")
+                .silo(Silo.builder()
+                        .id(5L)
+                        .name("Silo2")
+                        .capacity(12000f)
+                        .build()
+                )
+                .build();
+        ses = new HashSet<>(Arrays.asList(se1,se2));
 
-    @Test
-    public void getSiloByIdTestNotFound() throws Exception{
-        Optional<Silo> siloOptional = Optional.empty();
-        when(siloRepository.findById(anyLong())).thenReturn(siloOptional);
-        Silo returnedSilo = siloServiceImpl.findById(1L).orElse(null);
-        assertEquals(returnedSilo.getId(),1L);
     }
 
     @Test
     void findById() {
+        when(siloEventRepository.findById(anyLong())).thenReturn(Optional.of(SiloEvent.builder().id(ID).build()));
+        SiloEvent s =siloEventService.findById(ID);
+        assertEquals(s.getId(),ID);
     }
 
     @Test
     void findByEventTime() {
+        when(siloEventRepository.findByEventTime(any())).thenReturn(ses);
+        Set<SiloEvent> retrieved = siloEventService.findByEventTime(LocalDateTime.now());
+        assertEquals(retrieved.size(),ses.size());
     }
 
     @Test
     void findBySilo() {
+        when(siloEventRepository.findBySilo(any())).thenReturn(ses);
+        Set<SiloEvent> retrieved = siloEventService.findByEventTime(LocalDateTime.now());
+        assertEquals(retrieved.size(),ses.size());
     }
 
     @Test
     void findBySiloName() {
+        String name = "Silo3";
+        Silo silo = Silo.builder().id(6L).name(name).build();       //redundant
+        ses.forEach(se->se.setSilo(Silo.builder().name(name).build()));
+        when(siloService.findByName(anyString())).thenReturn(silo); //redundant
+        when(siloEventRepository.findBySilo(any())).thenReturn(ses);
+        Set<SiloEvent> retrieved = siloEventService.findBySiloName(name);
+        assertEquals(retrieved.size(),ses.size());
+        assertEquals(ses.iterator().next().getSilo().getName(),name);
     }
 
     @Test
     void findBySilo_id() {
+
     }
 
     @Test

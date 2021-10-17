@@ -48,6 +48,13 @@
         div.error{
             color:red;
         }
+        .forms{
+            width: 150px
+        }
+
+        .formserror{
+            width: 150px;
+        }
     </style>
 </head>
 <body>
@@ -58,28 +65,22 @@
             <table class="l">
                 <tr><td class="l" th:text="${eachsilo.name}"></td></tr>
                 <tr><td class="l" th:text="${eachsilo.stored + 't'}"></td>
-                </tr><tr><td class="l" th:text="${eachsilo.ware.name}"></td></tr>
+                </tr><tr><td th:if="${eachsilo.ware!=null}" class="l" th:text="${eachsilo.ware.name}"></td></tr>
             </table>
-        </div><!--<div style="display:inline-block" class="circle"></div>-->
+        </div>
         <div class="circle" style="display:inline-block" th:remove="all">1110t</div>
         <div class="circle" style="display:inline-block" th:remove="all">0t</div>
         <div class="circle" style="display:inline-block" th:remove="all">0t</div>
     </a>
 </div>
-<!--<div>-->
-<!--    <div class="circle"></div><div class="circle"></div>-->
-<!--</div>-->
-<div th:text="${silo}"></div>
-<!--<div th:if="${#fields.hasErrors('*')}">-->
-<!--    <p>Popraw błędy poniżej</p>-->
-<!--</div>-->
+<div th:text="${silo.name}"></div>
 <form th:object="${siloevent}" method="post">
     <table>
         <tr>
             <th>Data</th><th>Towar</th><th>Ilość</th><th>Czynność</th><th>Dokument</th><th>Opis</th><th>Kto</th>
         </tr>
         <tr th:each="event : ${events}">
-            <td th:text="${event.eventTime}"></td>
+            <td th:text="${#temporals.format(event.eventTime, 'yyyy-MM-dd HH:mm')}"></td>
             <td th:text="${event.ware.name}"></td>
             <td th:text="${#numbers.formatDecimal(event.quantity,0,2,'COMMA')}"></td>
             <td th:text="${event.eventKind.name}"></td>
@@ -89,21 +90,16 @@
         </tr>
         <tr>
             <td><input th:field="${siloevent.eventTime}" type="datetime-local"/></td>
-            <td>
-                <select th:field="*{ware}">
+            <td class="forms">
+                <select th:class="${#fields.hasErrors('ware')}?'formserror':'forms'" th:field="${siloevent.ware}" th:errorClass="has-error">
                     <option th:each="w : ${wares}" th:value="${w.id}" th:text="${w.name}"></option>
                 </select>
             </td>
-            <td>
+            <td class="forms">
                 <input th:class="${#fields.hasErrors('quantity')}?'error':''" th:field="${siloevent.quantity}" th:errorClass="has-error" id="quantity1"/>
-                <div class="error" style="position: absolute" th:if="${#fields.hasErrors('quantity')}">
-                    <ul>
-                        <li th:each="err : ${#fields.errors('quantity')}" th:text="${err}"></li>
-                    </ul>
-                </div>
             </td>
-            <td>
-                <select id="kind" onchange="targetfetch()" th:field="*{eventKind}">
+            <td class="forms">
+                <select id="kind" onchange="targetfetch()" th:field="*{eventKind}" th:class="${#fields.hasErrors('eventKind')}?'formserror':'forms'">
                     <option value="0">---wybierz---</option>
                     <option th:each="e : ${eks}" th:value="${e.id}" th:text="${e.name}"></option>
                 </select>
@@ -114,30 +110,67 @@
                     </select>
                 </div>
             </td>
-            <td>
+            <td class="forms">
                 <input th:class="${#fields.hasErrors('document')}?'error':''" th:field="${siloevent.document}"/>
-                <div class="error" style="position: absolute" th:if="${#fields.hasErrors('document')}">
+            </td>
+            <td class="forms">
+                <input th:class="${#fields.hasErrors('description')}?'error':''" th:field="${siloevent.description}"/>
+            </td>
+            <td class="forms">
+                <select th:field="*{person}" class="forms">
+                    <option value="0">---wybierz---</option>
+                    <option th:each="p : ${persons}" th:value="${p.id}" th:text="${p.firstName}+' '+${p.lastName}"></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align:top">
+                <button type="submit" onclick="comma_dot()">Zapisz</button>
+            </td>
+            <td style="vertical-align:top">
+                <div th:if="${#fields.hasErrors('ware')}" class="error">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('ware')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </td>
+            <td style="vertical-align:top">
+                <div class="error" th:if="${#fields.hasErrors('quantity')}">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('quantity')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </td>
+            <td style="vertical-align:top">
+                <div class="error" th:if="${#fields.hasErrors('eventKind')}">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('eventKind')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </td>
+            <td style="vertical-align:top">
+                <div class="error" th:if="${#fields.hasErrors('document')}">
                     <ul>
                         <li th:each="err : ${#fields.errors('document')}" th:text="${err}"></li>
                     </ul>
                 </div>
             </td>
-            <td>
-                <input th:class="${#fields.hasErrors('description')}?'error':''" th:field="${siloevent.description}"/>
-                <div class="error" style="position: absolute" th:if="${#fields.hasErrors('description')}">
+            <td style="vertical-align:top">
+                <div class="error" th:if="${#fields.hasErrors('description')}">
                     <ul>
                         <li th:each="err : ${#fields.errors('description')}" th:text="${err}"></li>
                     </ul>
                 </div>
             </td>
-            <td>
-                <select th:field="*{person}">
-                    <option th:each="p : ${persons}" th:value="${p.id}" th:text="${p.firstName}+' '+${p.lastName}"></option>
-                </select>
+            <td style="vertical-align:top">
+                <div class="error" th:if="${#fields.hasErrors('person')}">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('person')}" th:text="${err}"></li>
+                    </ul>
+                </div>
             </td>
         </tr>
     </table>
-    <button type="submit" onclick="comma_dot()">Zapisz</button>
 </form>
 </body>
 </html>

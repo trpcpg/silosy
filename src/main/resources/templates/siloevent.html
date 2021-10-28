@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
     <script>
-        $(document).ready(function(){$('#targetcontener').hide()});
+        //$(document).ready(function(){$('#targetcontener').hide()});
         function targetfetch(){
             var s = document.getElementById("kind");
             if(s.value==3 || s.value==4 || s.value==6){
@@ -54,6 +54,13 @@
 
         .formserror{
             width: 150px;
+        }
+        .showSS{
+            position: absolute;
+        }
+        .hideSS{
+            position: absolute;
+            display: none;
         }
     </style>
 </head>
@@ -103,7 +110,7 @@
                     <option value="0">---wybierz---</option>
                     <option th:each="e : ${eks}" th:value="${e.id}" th:text="${e.name}"></option>
                 </select>
-                <div style="position: absolute" id="targetcontener">
+                <div th:class="${#fields.hasErrors('eventKind')}==true?'showSS':'hideSS'" id="targetcontener">
                     <select th:object="${targetsilo}" id="target" name="targetsilo">
                         <option value="0">---wybierz---</option>
                         <option th:each="s : ${silos}" th:value="${s.id}" th:text="${s.name}"></option>

@@ -35,6 +35,7 @@ class SiloEventServiceImplTest {
     SiloEvent se2;
     Set<SiloEvent> ses;
     LocalDateTime eventTime = LocalDateTime.now();
+    Set<Silo> siloSet = new HashSet<>();
 
     @BeforeEach
     void setUp() {
@@ -91,7 +92,8 @@ class SiloEventServiceImplTest {
                 )
                 .build();
         ses = new HashSet<>(Arrays.asList(se1,se2));
-
+        siloSet.add(Silo.builder().id(10L).name("Silo1").build());
+        siloSet.add(Silo.builder().id(20L).name("Silo2").build());
     }
 
     @Test
@@ -111,7 +113,7 @@ class SiloEventServiceImplTest {
     @Test
     void findBySilo() {
         when(siloEventRepository.findBySilo(any())).thenReturn(ses);
-        Set<SiloEvent> retrieved = siloEventService.findByEventTime(LocalDateTime.now());
+        Set<SiloEvent> retrieved = siloEventService.findBySilo(siloSet.iterator().next());
         assertEquals(retrieved.size(),ses.size());
     }
 

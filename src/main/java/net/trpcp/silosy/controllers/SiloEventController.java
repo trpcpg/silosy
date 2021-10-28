@@ -59,7 +59,7 @@ public class SiloEventController {
     @GetMapping("siloevent/{nr}")
     public ModelAndView getEvents(@PathVariable("nr") Long id) {
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/siloevent");
+        mav.setViewName("siloevent");
         Optional<Silo> os1 = siloService.findById(id);
         if(os1.isEmpty()){
             throw new NotFoundException1("Nie odnaleziono silosa nr " + id);
@@ -132,38 +132,41 @@ public class SiloEventController {
             }
         }
         Silo s = os1.get();
-        System.out.println("---------"+s.getWare().getId()+" "+s.getName());
+//        System.out.println("---------"+s.getWare().getId()+" "+s.getName());
         if(targetSiloO.getWare()!=null) {
             if (!siloEvent.getWare().getId().equals(targetSiloO.getWare().getId())) {
-                bindingResult.rejectValue("ware", "WareDiscrepency.target.ware");
+                bindingResult.rejectValue("eventKind", "WareDiscrepency.target.ware");
+                siloEvent.setEventKind(null);
             }
         }
-        if(siloEvent.getQuantity()!=null) {
-            if (s.getStored() == null) {
-                s.setStored(0f);
-            }
-            if (targetSiloO.getStored() == null) {
-                targetSiloO.setStored(0f);
-            }
-            float amount = siloEvent.getQuantity() * siloEvent.getEventKind().getFactor();
-            float stored1 = s.getStored() + amount;
-            if (stored1 < 0f) {
-                bindingResult.rejectValue("quantity", "NegativeQuantity.news.quantity");
-            }
-            float stored2;
-            if (targetSiloO.getId() != null) {
-                stored2 = targetSiloO.getStored() - amount;
-                if (stored2 < 0f) {
-                    bindingResult.rejectValue("quantity", "NegativeQuantity.target.quantity");
+        else{
+            if(siloEvent.getQuantity()!=null) {
+                if (s.getStored() == null) {
+                    s.setStored(0f);
                 }
-            }
-            if (stored1 > s.getCapacity()) {
-                bindingResult.rejectValue("quantity", "SiloOverflow.news.quantity");
-            }
-            if (targetSiloO.getId() != null) {
-                stored2 = targetSiloO.getStored() - amount;
-                if (stored2 > targetSiloO.getCapacity()) {
-                    bindingResult.rejectValue("quantity", "SiloOverflow.target.quantity");
+                if (targetSiloO.getStored() == null) {
+                    targetSiloO.setStored(0f);
+                }
+                float amount = siloEvent.getQuantity() * siloEvent.getEventKind().getFactor();
+                float stored1 = s.getStored() + amount;
+                if (stored1 < 0f) {
+                    bindingResult.rejectValue("quantity", "NegativeQuantity.news.quantity");
+                }
+                float stored2;
+                if (targetSiloO.getId() != null) {
+                    stored2 = targetSiloO.getStored() - amount;
+                    if (stored2 < 0f) {
+                        bindingResult.rejectValue("quantity", "NegativeQuantity.target.quantity");
+                    }
+                }
+                if (stored1 > s.getCapacity()) {
+                    bindingResult.rejectValue("quantity", "SiloOverflow.news.quantity");
+                }
+                if (targetSiloO.getId() != null) {
+                    stored2 = targetSiloO.getStored() - amount;
+                    if (stored2 > targetSiloO.getCapacity()) {
+                        bindingResult.rejectValue("quantity", "SiloOverflow.target.quantity");
+                    }
                 }
             }
         }

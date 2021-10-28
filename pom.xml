@@ -13,6 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>silosy</name>
 	<description>dziennik silosa</description>
+<!--	<packaging>jar</packaging>-->
 	<properties>
 		<java.version>16</java.version>
 	</properties>
@@ -70,7 +71,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
 
 	</dependencies>
@@ -81,14 +81,35 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
+					<mainClass>net.trpcp.silosy.SilosyApplication</mainClass>
 				</configuration>
+
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
+<!--			<plugin>-->
+
+<!--				&lt;!&ndash; Building an executable jar &ndash;&gt;-->
+
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-jar-plugin</artifactId>-->
+<!--				<version>3.1.0</version>-->
+<!--				<configuration>-->
+<!--					<archive>-->
+<!--						<manifest>-->
+
+<!--							&lt;!&ndash; give full qualified name of your main class&ndash;&gt;-->
+<!--							<mainClass>net.trpcp.silosy.SilosyApplication</mainClass>-->
+
+<!--						</manifest>-->
+<!--					</archive>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 

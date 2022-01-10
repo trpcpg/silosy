@@ -159,6 +159,9 @@ public class SiloEventController {
                         bindingResult.rejectValue("quantity", "NegativeQuantity.target.quantity");
                     }
                 }
+                if(siloEvent.getEventKind().getSibling()!=null && targetSilo==0){
+                    bindingResult.rejectValue("eventKind", "NoSiloSelected.target.silo");
+                }
                 if (stored1 > s.getCapacity()) {
                     bindingResult.rejectValue("quantity", "SiloOverflow.news.quantity");
                 }
@@ -222,6 +225,7 @@ public class SiloEventController {
         }
         siloEvent.setSilo(s);
         model.addAttribute("silo", s);
+        SiloEvent targetEvent = null;
         if(siloEvent.getEventKind().getFactor()!=0){
             float amount = siloEvent.getQuantity() * siloEvent.getEventKind().getFactor();
             if(siloEvent.getEventKind().getId()==6L){
@@ -233,7 +237,7 @@ public class SiloEventController {
             if(siloEvent.getEventKind().getId()==3L || siloEvent.getEventKind().getId()==4L || siloEvent.getEventKind().getId()==6L){
                 targetSiloO.setStored(targetSiloO.getStored()-amount);
                 targetSiloO.setWare(siloEvent.getWare());
-                SiloEvent targetEvent = SiloEvent.builder()
+                targetEvent = SiloEvent.builder()
                         .quantity(siloEvent.getQuantity())
                         .silo(targetSiloO)
                         .eventTime(siloEvent.getEventTime())
@@ -253,7 +257,6 @@ public class SiloEventController {
                     targetEvent.setEventKind(eventKindService.findById(4L));
                     targetEvent.setDescription("wietrzenie z " + s.getName());
                 }
-                siloEventService.save(targetEvent);
             }
         }
         else{
@@ -274,6 +277,7 @@ public class SiloEventController {
         }
 
         siloEventService.save(siloEvent);
+        if(targetEvent!=null)siloEventService.save(targetEvent);
         //siloService.save(s);
 
         Iterable<Silo> siloset = siloService.findAllOrderByName();

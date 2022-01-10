@@ -3,7 +3,6 @@ package net.trpcp.silosy.services;
 import net.trpcp.silosy.model.EventKind;
 
 import java.util.List;
-import java.util.Set;
 
 public interface EventKindService {
     EventKind findById(Long id);

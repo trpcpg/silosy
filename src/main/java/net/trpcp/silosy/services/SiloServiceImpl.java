@@ -86,4 +86,9 @@ public class SiloServiceImpl implements SiloService {
     public Set<Silo> findByNameLike(String s) {
         return siloRepository.findByNameLike(s);
     }
+
+    @Override
+    public Iterable<Silo> findAllByOrderById() {
+        return siloRepository.findAllByOrderByIdAsc();
+    }
 }

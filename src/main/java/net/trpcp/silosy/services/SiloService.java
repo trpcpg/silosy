@@ -23,4 +23,6 @@ public interface SiloService {
     Iterable<Silo> saveAll(Set<Silo> silos);
 
     void delete(Silo silo);
+
+    Iterable<Silo> findAllByOrderById();
 }

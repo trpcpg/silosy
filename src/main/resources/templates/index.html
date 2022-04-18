@@ -6,7 +6,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
     <script>
-        $(document).ready(function(){$('#targetcontener').hide()});
+        $(document).ready(function(){
+            $('#targetcontener').hide();
+        });
         function targetfetch(){
             var s = document.getElementById("kind");
             if(s.value==3 || s.value==4 || s.value==6){
@@ -17,15 +19,30 @@
             }
             console.log(s.value);
         }
+        function boldify(id){
+            document.getElementById(id).style.backgroundColor="#eeffee";
+        }
+        function clearout1(id){
+            document.getElementById(id).style.backgroundColor="#ffffff";
+        }
     </script>
     <style>
+        .square{
+            height: 125px;
+            width: 121px;
+            border: 3px solid #73AD21;
+            text-align: center;
+            display: inline-block;
+        }
         .circle {
             border-radius: 50%;
             height: 100px;
             width: 100px;
+            background: white;
             border: 3px solid #73AD21;
-            margin: auto;
+            margin: 10px;
             text-align: center;
+            display: inline-block;
         }
         .all{
             width: 250px;
@@ -35,26 +52,180 @@
             position:relative;
             height: 17px;
         }
+        div.l2 {
+            position:relative;
+            height: 23px;
+        }
         table.l {
             margin: 0 auto; /* or margin: 0 auto 0 auto */
+        }
+        .square_link{
+            position: absolute;
+            height: 70px;
+            width: 70px;
         }
     </style>
 </head>
 <body>
-<div class="all">
-    <a th:each="eachsilo : ${silos}" style="display:inline-block" href="#" th:href="@{'siloevent/'+${eachsilo.id}}">
-        <div class="circle">
-            <div class="l"></div>
+<div style="position: absolute; z-index: -10; left: 70px; top: 70px; padding: 0px">
+        <div class="square" id="z12">
+            <div class="l2"></div>
             <table class="l">
-                <tr><td class="l" th:text="${eachsilo.name}"></td></tr>
-                <tr><td class="l" th:text="${eachsilo.stored + 't'}"></td>
-                </tr><tr><td class="l" th:if="${eachsilo.ware}" th:text="${eachsilo.ware.name}"></td></tr>
+                <tr><td class="l" th:text="${silos[12].name}"></td></tr>
+                <tr><td class="l" th:text="${silos[12].stored + 't'}"></td></tr>
+                <tr><td th:if="${silos[12].ware}" th:text="${silos[12].ware.name}"></td></tr>
             </table>
-        </div><!--<div style="display:inline-block" class="circle"></div>-->
-        <div class="circle" style="display:inline-block" th:remove="all">1110t</div>
-        <div class="circle" style="display:inline-block" th:remove="all">0t</div>
-        <div class="circle" style="display:inline-block" th:remove="all">0t</div>
-    </a>
+        </div>
+        <div class="square" id="z13">
+            <div class="l2"></div>
+            <table class="l">
+                <tr><td class="l" th:text="${silos[13].name}"></td></tr>
+                <tr><td class="l" th:text="${silos[13].stored + 't'}"></td>
+                </tr><tr><td th:if="${silos[13].ware}" th:text="${silos[13].ware.name}"></td></tr>
+            </table>
+        </div>
+        <div class="square" id="z14">
+            <div class="l2"></div>
+            <table class="l">
+                <tr><td class="l" th:text="${silos[14].name}"></td></tr>
+                <tr><td class="l" th:text="${silos[14].stored + 't'}"></td>
+                </tr><tr><td th:if="${silos[14].ware}" th:text="${silos[14].ware.name}"></td></tr>
+            </table>
+        </div>
+        <div class="square" id="z15">
+            <div class="l2"></div>
+            <table class="l">
+                <tr><td class="l" th:text="${silos[15].name}"></td></tr>
+                <tr><td class="l" th:text="${silos[15].stored + 't'}"></td>
+                </tr><tr><td th:if="${silos[15].ware}" th:text="${silos[15].ware.name}"></td></tr>
+            </table>
+        </div>
+        <div class="square" id="z16">
+            <div class="l2"></div>
+            <table class="l">
+                <tr><td class="l" th:text="${silos[16].name}"></td></tr>
+                <tr><td class="l" th:text="${silos[16].stored + 't'}"></td>
+                </tr><tr><td th:if="${silos[16].ware}" th:text="${silos[16].ware.name}"></td></tr>
+            </table>
+        </div>
+</div>
+<div>
+    <div class="circle" id="z0">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[0].id}}"><div style="position: fixed; left: 35px; height: 70px; width: 70px;" onmouseenter="boldify('z0')" onmouseleave="clearout1('z0')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[0].name}"></td></tr>
+            <tr><td class="l" th:text="${silos[0].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[0].ware!=null}" class="l" th:text="${silos[0].ware.name}"></td></tr>
+        </table>
+    </div>
+    <div class="circle" id="z2">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[2].id}}"><div style="position: fixed; left: 165px; height: 70px; width: 70px;" onmouseenter="boldify('z2')" onmouseleave="clearout1('z2')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[2].name}"></td></tr>
+            <tr><td class="l" th:text="${silos[2].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[2].ware}" th:text="${silos[2].ware.name}"></td></tr>
+        </table>
+    </div>
+    <div class="circle" id="z4">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[4].id}}"><div style="position: fixed; left: 295px; height: 70px; width: 70px;" onmouseenter="boldify('z4')" onmouseleave="clearout1('z4')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[4].name}"></td></tr>
+            <tr><td class="l" th:text="${silos[4].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[4].ware}" th:text="${silos[4].ware.name}"></td></tr>
+        </table>
+    </div>
+    <div class="circle" id="z6">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[6].id}}"><div style="position: fixed; left: 425px; height: 70px; width: 70px;" onmouseenter="boldify('z6')" onmouseleave="clearout1('z6')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[6].name}"></td></tr>
+            <tr><td class="l" th:text="${silos[6].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[6].ware}" th:text="${silos[6].ware.name}"></td></tr>
+        </table>
+    </div>
+    <div class="circle" id="z8">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[8].id}}"><div style="position: fixed; left: 555px; height: 70px; width: 70px;" onmouseenter="boldify('z8')" onmouseleave="clearout1('z8')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[8].name}"></td></tr>
+            <tr><td class="l" th:text="${silos[8].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[8].ware}" th:text="${silos[8].ware.name}"></td></tr>
+        </table>
+    </div>
+    <div class="circle" id="z10">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[10].id}}"><div style="position: fixed; left: 685px; height: 70px; width: 70px;" onmouseenter="boldify('z10')" onmouseleave="clearout1('z10')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[10].name}"></td></tr>
+            <tr><td class="l" th:text="${silos[10].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[10].ware}" th:text="${silos[10].ware.name}"></td></tr>
+        </table>
+    </div>
+</div>
+<div>
+    <div class="circle" id="z1">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[1].id}}"><div style="position: fixed; left: 35px; height: 70px; width: 70px;" onmouseenter="boldify('z1')" onmouseleave="clearout1('z1')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[1].name}"></td></tr>
+            <tr><td class="l" th:text="${silos[1].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[1].ware}" th:text="${silos[1].ware.name}"></td></tr>
+        </table>
+    </div>
+    <div class="circle" id="z3">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[3].id}}"><div style="position: fixed; left: 165px; height: 70px; width: 70px;" onmouseenter="boldify('z3')" onmouseleave="clearout1('z3')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[3].name}"></td></tr>
+            <tr><td class="l" th:text="${silos[3].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[3].ware}" th:text="${silos[3].ware.name}"></td></tr>
+        </table>
+    </div>
+    <div class="circle" id="z5">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[5].id}}"><div style="position: fixed; left: 295px; height: 70px; width: 70px;" onmouseenter="boldify('z5')" onmouseleave="clearout1('z5')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[5].name}"></td></tr>
+            <tr><td class="l" th:text="${silos[5].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[5].ware}" th:text="${silos[5].ware.name}"></td></tr>
+        </table>
+    </div>
+    <div class="circle" id="z7">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[7].id}}"><div style="position: fixed; left: 425px; height: 70px; width: 70px;" onmouseenter="boldify('z7')" onmouseleave="clearout1('z7')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[7].name}"></td></tr>
+            <tr><td class="l" th:text="${silos[7].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[7].ware}" th:text="${silos[7].ware.name}"></td></tr>
+        </table>
+    </div>
+    <div class="circle" id="z9">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[9].id}}"><div style="position: fixed; left: 555px; height: 70px; width: 70px;" onmouseenter="boldify('z9')" onmouseleave="clearout1('z9')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[9].name}"></td></tr>
+            <tr><td class="l" th:text="${silos[9].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[9].ware}" th:text="${silos[9].ware.name}"></td></tr>
+        </table>
+    </div>
+    <div class="circle" id="z11">
+        <div class="l"></div>
+        <a href="#" th:href="@{'siloevent/'+${silos[11].id}}"><div style="position: fixed; left: 685px; height: 70px; width: 70px;" onmouseenter="boldify('z11')" onmouseleave="clearout1('z11')"></div></a>
+        <table class="l">
+            <tr><td class="l" th:text="${silos[11].name}"></td></tr>
+            <tr><td class="l"th:text="${silos[11].stored + 't'}"></td>
+            </tr><tr><td th:if="${silos[11].ware}" th:text="${silos[11].ware.name}"></td></tr>
+        </table>
+    </div>
+</div>
+<a href="#" th:href="@{'siloevent/'+${silos[12].id}}"><div class="square_link" style="top: 100px; left:100px" onmouseenter="boldify('z12')" onmouseleave="clearout1('z12')"></div></a>
+<a href="#" th:href="@{'siloevent/'+${silos[13].id}}"><div class="square_link" style="top: 100px; left:235px" onmouseenter="boldify('z13')" onmouseleave="clearout1('z13')"></div></a>
+<a href="#" th:href="@{'siloevent/'+${silos[14].id}}"><div class="square_link" style="top: 100px; left:360px" onmouseenter="boldify('z14')" onmouseleave="clearout1('z14')"></div></a>
+<a href="#" th:href="@{'siloevent/'+${silos[15].id}}"><div class="square_link" style="top: 100px; left:490px" onmouseenter="boldify('z15')" onmouseleave="clearout1('z15')"></div></a>
+<a href="#" th:href="@{'siloevent/'+${silos[16].id}}"><div class="square_link" style="top: 100px; left:620px" onmouseenter="boldify('z16')" onmouseleave="clearout1('z16')"></div></a>
 </div>
 <!--<div>-->
 <!--    <div class="circle"></div><div class="circle"></div>-->

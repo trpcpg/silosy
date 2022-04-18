@@ -59,11 +59,23 @@ public class DataLoader implements CommandLineRunner {
 
         Iterable<Silo> set = new HashSet<>();
 
-        siloService.save(Silo.builder().name("Silo1").capacity(13000f).stored(0f).status(0).build());
-        siloService.save(Silo.builder().name("Silo2").capacity(13000f).stored(0f).status(0).build());
-        siloService.save(Silo.builder().name("Silo3").capacity(13000f).stored(0f).status(0).build());
-        siloService.save(Silo.builder().name("Silo4").capacity(13000f).stored(0f).status(0).build());
-
+        siloService.save(Silo.builder().name("Z1").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z2").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z3").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z4").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z5").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z6").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z7").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z8").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z9").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z10").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z11").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z12").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z13").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z14").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z15").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z16").capacity(1000f).stored(0f).status(0).build());
+        siloService.save(Silo.builder().name("Z17").capacity(1000f).stored(0f).status(0).build());
 //        Iterable<Silo> savedSilos = siloService.saveAll(set);
 //        List<Silo> siloList = new ArrayList<>();
 //        savedSilos.forEach(siloList::add);
